@@ -17,20 +17,56 @@ class Blocks:
         style.configure("TEntry", background="#ffffff")  # Цвет фона для полей ввода
 
         # Блок "Первоначальные инвестиции"
-        self.investment_frame = ttk.Frame(root, style="TFrame")
+        self.investment_frame = ttk.Frame(root, borderwidth=2, relief="solid", width=200, height=100)
         self.investment_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
         ttk.Label(self.investment_frame, text="Первоначальные инвестиции", style="TLabel").grid(row=0, column=0, pady=5)
 
-        ttk.Label(self.investment_frame, text="Первоначальная аренда:", style="TLabel").grid(row=1, column=0, pady=5)
+        ttk.Label(self.investment_frame, text="Аренда:", style="TLabel").grid(row=1, column=0, pady=10,  sticky="w", padx=5)
         self.entry_initial_rent = ttk.Entry(self.investment_frame, style="TEntry")
         self.entry_initial_rent.grid(row=1, column=1, pady=5)
 
-        ttk.Label(self.investment_frame, text="Ремонт:", style="TLabel").grid(row=2, column=0, pady=5)
+        ttk.Label(self.investment_frame, text="Ремонт:", style="TLabel").grid(row=2, column=0, pady=10,  sticky="w", padx=5)
         self.entry_repair = ttk.Entry(self.investment_frame, style="TEntry")
         self.entry_repair.grid(row=2, column=1, pady=5)
 
-        # Добавьте другие поля для "Первоначальные инвестиции" по аналогии
+        ttk.Label(self.investment_frame, text="Оборудование:", style="TLabel").grid(row=3, column=0, pady=10,  sticky="w", padx=5)
+        self.entry_equipment = ttk.Entry(self.investment_frame, style="TEntry")
+        self.entry_equipment.grid(row=3, column=1, pady=5)
+
+        ttk.Label(self.investment_frame, text="Продукты:", style="TLabel").grid(row=4, column=0, pady=10,  sticky="w", padx=5)
+        self.entry_products = ttk.Entry(self.investment_frame, style="TEntry")
+        self.entry_products.grid(row=4, column=1, pady=5)
+
+        ttk.Label(self.investment_frame, text="Документы:", style="TLabel").grid(row=5, column=0, pady=10,  sticky="w", padx=5)
+        self.entry_documents = ttk.Entry(self.investment_frame, style="TEntry")
+        self.entry_documents.grid(row=5, column=1, pady=5)
+
+        ttk.Label(self.investment_frame, text="ФОТ:", style="TLabel").grid(row=6, column=0, pady=10,  sticky="w", padx=5)
+        self.entry_fot = ttk.Entry(self.investment_frame, style="TEntry")
+        self.entry_fot.grid(row=6, column=1, pady=5)
+
+        ttk.Label(self.investment_frame, text="Охрана:", style="TLabel").grid(row=7, column=0, pady=10,  sticky="w", padx=5)
+        self.entry_guard = ttk.Entry(self.investment_frame, style="TEntry")
+        self.entry_guard.grid(row=7, column=1, pady=5)
+
+        ttk.Label(self.investment_frame, text="Маркетинг:", style="TLabel").grid(row=8, column=0, pady=10,  sticky="w", padx=5)
+        self.entry_smm = ttk.Entry(self.investment_frame, style="TEntry")
+        self.entry_smm.grid(row=8, column=1, pady=5)
+
+        ttk.Label(self.investment_frame, text="Коммунальные платежи:", style="TLabel").grid(row=9, column=0, pady=10,  sticky="w", padx=5)
+        self.entry_service = ttk.Entry(self.investment_frame, style="TEntry")
+        self.entry_service.grid(row=9, column=1, pady=5)
+
+        ttk.Label(self.investment_frame, text="Налоги:", style="TLabel").grid(row=10, column=0, pady=10,  sticky="w", padx=5)
+        self.entry_tax = ttk.Entry(self.investment_frame, style="TEntry")
+        self.entry_tax.grid(row=10, column=1, pady=5)
+
+        #
+        #
+        #
+        #
+        #
 
         # Опция для минимальной высоты строки
         self.investment_frame.grid_rowconfigure(0, weight=1)
@@ -38,39 +74,80 @@ class Blocks:
         self.investment_frame.grid_rowconfigure(2, weight=1)
 
         # Блок "Доходы"
-        self.income_frame = ttk.Frame(root, style="TFrame")
-        self.income_frame.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
+        self.income_frame = ttk.Frame(root, borderwidth=2, relief="solid", width=200, height=100)
+        self.income_frame.grid(row=1, column=0, padx=10, pady=10)
 
         ttk.Label(self.income_frame, text="Доходы", style="TLabel").grid(row=0, column=0, pady=5)
 
-        ttk.Label(self.income_frame, text="Количество посетителей:", style="TLabel").grid(row=1, column=0, pady=5)
+        ttk.Label(self.income_frame, text="Количество посетителей (1 мес.):", style="TLabel").grid(row=1, column=0, pady=5)
         self.entry_visitors = ttk.Entry(self.income_frame, style="TEntry")
         self.entry_visitors.grid(row=1, column=1, pady=5)
 
-        ttk.Label(self.income_frame, text="Средний чек:", style="TLabel").grid(row=2, column=0, pady=5)
-        self.entry_average_check = ttk.Entry(self.income_frame, style="TEntry")
-        self.entry_average_check.grid(row=2, column=1, pady=5)
+        ttk.Label(self.income_frame, text="Количество посетителей (2 мес.):", style="TLabel").grid(row=2, column=0, pady=5)
+        self.entry_visitors = ttk.Entry(self.income_frame, style="TEntry")
+        self.entry_visitors.grid(row=2, column=1, pady=5)        
 
-        # Добавьте другие поля для "Доходы" по аналогии
+        ttk.Label(self.income_frame, text="Количество посетителей (3 мес.):", style="TLabel").grid(row=3, column=0, pady=5)
+        self.entry_visitors = ttk.Entry(self.income_frame, style="TEntry")
+        self.entry_visitors.grid(row=3, column=1, pady=5)
+
+        ttk.Label(self.income_frame, text="Количество посетителей (4 мес.):", style="TLabel").grid(row=4, column=0, pady=5)
+        self.entry_visitors = ttk.Entry(self.income_frame, style="TEntry")
+        self.entry_visitors.grid(row=4, column=1, pady=5)
+
+        ttk.Label(self.income_frame, text="Количество посетителей (5 мес.):", style="TLabel").grid(row=5, column=0, pady=5)
+        self.entry_visitors = ttk.Entry(self.income_frame, style="TEntry")
+        self.entry_visitors.grid(row=5, column=1, pady=5)
+
+        ttk.Label(self.income_frame, text="Средний чек:", style="TLabel").grid(row=6, column=0, pady=5,  sticky="w", padx=5)
+        self.entry_average_check = ttk.Entry(self.income_frame, style="TEntry")
+        self.entry_average_check.grid(row=6, column=1, pady=5)
 
         # Опция для минимальной высоты строки
         self.income_frame.grid_rowconfigure(0, weight=1)
         self.income_frame.grid_rowconfigure(1, weight=1)
         self.income_frame.grid_rowconfigure(2, weight=1)
 
+        #
+        #
+        #
+        #
+        #
+
         # Блок "Расходы"
-        self.expenses_frame = ttk.Frame(root, style="TFrame")
+        self.expenses_frame = ttk.Frame(root, borderwidth=2, relief="solid", width=200, height=100)
         self.expenses_frame.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
 
         ttk.Label(self.expenses_frame, text="Расходы", style="TLabel").grid(row=0, column=0, pady=5)
 
-        ttk.Label(self.expenses_frame, text="Аренда:", style="TLabel").grid(row=1, column=0, pady=5)
-        self.entry_rent = ttk.Entry(self.expenses_frame, style="TEntry")
-        self.entry_rent.grid(row=1, column=1, pady=5)
+        ttk.Label(self.expenses_frame, text="Аренда:", style="TLabel").grid(row=1, column=0, pady=10,  sticky="w", padx=5)
+        self.entry_month_rent = ttk.Entry(self.expenses_frame, style="TEntry")
+        self.entry_month_rent.grid(row=1, column=1, pady=5)
 
-        ttk.Label(self.expenses_frame, text="Продукты:", style="TLabel").grid(row=2, column=0, pady=5)
-        self.entry_products_expenses = ttk.Entry(self.expenses_frame, style="TEntry")
-        self.entry_products_expenses.grid(row=2, column=1, pady=5)
+        ttk.Label(self.expenses_frame, text="Ремонт:", style="TLabel").grid(row=2, column=0, pady=10,  sticky="w", padx=5)
+        self.entry_month_repair = ttk.Entry(self.expenses_frame, style="TEntry")
+        self.entry_month_repair.grid(row=2, column=1, pady=5)
+
+        ttk.Label(self.expenses_frame, text="Продукты:", style="TLabel").grid(row=3, column=0, pady=10,  sticky="w", padx=5)
+        self.entry_month_products = ttk.Entry(self.expenses_frame, style="TEntry")
+        self.entry_month_products.grid(row=3, column=1, pady=5)
+
+        ttk.Label(self.expenses_frame, text="ФОТ:", style="TLabel").grid(row=4, column=0, pady=10,  sticky="w", padx=5)
+        self.entry_month_fot = ttk.Entry(self.expenses_frame, style="TEntry")
+        self.entry_month_fot.grid(row=4, column=1, pady=5)
+
+        ttk.Label(self.expenses_frame, text="Охрана:", style="TLabel").grid(row=5, column=0, pady=10,  sticky="w", padx=5)
+        self.entry_month_guard = ttk.Entry(self.expenses_frame, style="TEntry")
+        self.entry_month_guard.grid(row=5, column=1, pady=5)
+
+        ttk.Label(self.expenses_frame, text="Маркетинг:", style="TLabel").grid(row=6, column=0, pady=10,  sticky="w", padx=5)
+        self.entry_month_smm = ttk.Entry(self.expenses_frame, style="TEntry")
+        self.entry_month_smm.grid(row=6, column=1, pady=5)
+
+        ttk.Label(self.expenses_frame, text="Коммунальные платежи:", style="TLabel").grid(row=7, column=0, pady=5, sticky="w", padx=5)
+        self.entry_month_service = ttk.Entry(self.expenses_frame, style="TEntry")
+        self.entry_month_service.grid(row=7, column=1, pady=5)
+
 
         # Добавьте другие поля для "Расходы" по аналогии
 

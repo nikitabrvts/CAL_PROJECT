@@ -22,10 +22,13 @@ class ManagerPage:
         # Выводим информацию о клиентах
         for i, client in enumerate(self.clients_data, start=1):
             ttk.Label(self.clients_frame, text=f"Клиент {i}:", style="TLabel").grid(row=i, column=0, pady=5)
-            ttk.Label(self.clients_frame, text=f"Имя: {client['first_name']}").grid(row=i, column=1, pady=5)
-            ttk.Label(self.clients_frame, text=f"Фамилия: {client['last_name']}").grid(row=i, column=2, pady=5)
-            ttk.Label(self.clients_frame, text=f"Телефон: {client['phone_number']}").grid(row=i, column=3, pady=5)
-            ttk.Label(self.clients_frame, text=f"Отзыв: {client['review']}").grid(row=i, column=4, pady=5)
+            ttk.Label(self.clients_frame, text=f"{client['first_name']}").grid(row=i, column=1, pady=5)
+            ttk.Label(self.clients_frame, text=f"{client['last_name']}").grid(row=i, column=2, pady=5)
+            ttk.Label(self.clients_frame, text=f"Договор: захуярь меня из базы").grid(row=i, column=3, pady=5)
+            ttk.Label(self.clients_frame, text=f"Телефон: {client['phone_number']}").grid(row=i, column=4, pady=5)
+            ttk.Label(self.clients_frame, text=f"Отзыв: {client['review']}").grid(row=i, column=5, pady=5)
+            
+
 
             # Кнопка "Сформировать отчет" для каждого клиента
             ttk.Button(self.clients_frame, text="Сформировать отчет", command=lambda c=client: self.generate_report(c)).grid(row=i, column=5, pady=5)
