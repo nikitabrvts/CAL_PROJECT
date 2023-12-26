@@ -1,7 +1,8 @@
-# auth_form.py
-
 import tkinter as tk
 from tkinter import ttk
+from blocks import Blocks
+from manager import ManagerPage
+from client_registrator import ClientRegistrator
 
 class AuthForm:
     def __init__(self, root):
@@ -17,7 +18,8 @@ class AuthForm:
         style.configure("TButton", background="#a0a033")  # Цвет фона для кнопки
 
         # Задаем правильный логин и пароль для проверки
-        self.correct_login = ""
+        self.correct_boss_login = "BOSS"
+        self.correct_login = "SLAVE"
         self.correct_password = ""
 
         # Блок авторизации
@@ -49,13 +51,25 @@ class AuthForm:
         login = self.entry_login.get()
         password = self.entry_password.get()
         if login == self.correct_login and password == self.correct_password:
-            print("Успешная авторизация!")
+            print("Успешная авторизация РАБА!")
             self.auth_frame.destroy()
+            self.blocks_page = ClientRegistrator(self.root)
+            # Вызываем callback-функцию при успешной авторизации
+            if self.login_success_callback:
+                self.login_success_callback()
+        elif login == self.correct_boss_login and password == self.correct_password:
+            print("Успешная авторизация БОССА!")
+            self.auth_frame.destroy()
+            # Создаем экземпляр ManagerPage
+            self.manager_page = ManagerPage(self.root)
+            # Вызываем метод show_page для отображения страницы руководителя
+            self.manager_page.show_page()
             # Вызываем callback-функцию при успешной авторизации
             if self.login_success_callback:
                 self.login_success_callback()
         else:
             print("Ошибка авторизации. Пожалуйста, проверьте введенные данные.")
+
 
 
 if __name__ == "__main__":

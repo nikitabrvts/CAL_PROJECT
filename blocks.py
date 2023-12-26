@@ -1,11 +1,12 @@
 import tkinter as tk
 from tkinter import ttk
-from calculate import Calculator
+from calculator import Calculator
 from pdf_exporter import PDFExporter
 from plotter import Plotter
 
 class Blocks:
     def __init__(self, root):
+
         self.root = root
         self.root.title("Блоки с данными")
 
@@ -82,7 +83,7 @@ class Blocks:
         root.grid_rowconfigure(3, weight=1)
 
         # Кнопка "Рассчитать"
-        custom_font = ("Arial", 32, "bold")
+        self.calculator = Calculator(self)
         self.calculate_button = ttk.Button(root, text="Рассчитать", command=self.calculate)
         self.calculate_button.grid(row=3, column=0, pady=10)
 
@@ -105,7 +106,7 @@ class Blocks:
         self.pdf_exporter = PDFExporter("results.pdf")
 
         # Добавляем кнопку "Экспорт в PDF"
-        ttk.Button(self.root, text="Экспорт в PDF", command=lambda: self.export_to_pdf(total_income, total_expenses)).grid(row=2, column=3, pady=10)
+        ttk.Button(self.root, text="Экспорт в PDF", command=lambda: self.pdf_exporter.export_to_pdf(total_income, total_expenses)).grid(row=2, column=3, pady=10)
 
         # Выводим результаты в новый блок
         ttk.Label(result_frame, text=f"Общий доход: {total_income}").grid(row=0, column=0, pady=5)
@@ -130,9 +131,6 @@ class Blocks:
         self.income_frame.destroy()
         self.expenses_frame.destroy()
 
-    def export_to_pdf(self, total_income, total_expenses):
-        # Вызываем метод export_to_pdf у существующего экземпляра PDFExporter
-        self.pdf_exporter.export_to_pdf(total_income, total_expenses)
 
 if __name__ == "__main__":
     root = tk.Tk()
