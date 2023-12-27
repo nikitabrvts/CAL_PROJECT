@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from blocks import Blocks
-import sqlite3
+import psycopg2
 import uuid
 from feedback import Feedback
 
@@ -14,7 +14,15 @@ class ClientRegistrator:
         self.root.title("Информация о клиенте")
 
         # Подключаемся к базе даннх
-        self.conn = sqlite3.connect("project_database.db")
+
+
+        self.conn = psycopg2.connect(
+        host="localhost",
+        database="postgres",
+        user="postgres",
+        password="123"
+        )
+
         self.cursor = self.conn.cursor()
 
         # Создаем блок "Информация о клиенте"
@@ -64,9 +72,8 @@ class ClientRegistrator:
         middle_name = self.entry_middle_name.get()
         phone = self.entry_phone.get()
 
-        # Записываем данные в базу данных
-        self.cursor.execute("INSERT INTO clients (last_name, first_name, middle_name, phone_number, contract_number) VALUES (?, ?, ?, ?, ?)",
-                            (last_name, first_name, middle_name, phone, self.contract_number))
+        self.cursor.execute("INSERT INTO client (name, surname, middle_name, phone_number) VALUES (%s, %s, %s, %s)",
+                            (last_name, first_name, middle_name, phone))
         self.conn.commit()
         # Закрываем соединение
         self.conn.close()

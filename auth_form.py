@@ -1,8 +1,12 @@
 import tkinter as tk
 from tkinter import ttk
+import bcrypt
+
+import psycopg2
 from blocks import Blocks
-from manager import ManagerPage
+from director_page import ManagerPage
 from client_registrator import ClientRegistrator
+from manager_reg_frame import RegistrationFrame
 
 class AuthForm:
     def __init__(self, root):
@@ -22,6 +26,16 @@ class AuthForm:
         self.correct_login = "SLAVE"
         self.correct_password = ""
 
+
+        self.conn = psycopg2.connect(
+        host="localhost",
+        database="postgres",
+        user="postgres",
+        password="123"
+        )
+
+        self.cursor = self.conn.cursor()
+
         # Блок авторизации
         self.auth_frame = ttk.Frame(root, style="TFrame")
         self.auth_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
@@ -37,6 +51,7 @@ class AuthForm:
         self.entry_password.grid(row=2, column=1, pady=5)
 
         ttk.Button(self.auth_frame, text="Войти", command=self.login, style="TButton").grid(row=3, column=0, columnspan=2, pady=10)
+        ttk.Button(self.auth_frame, text="Регистрация", command=self.registration, style="TButton").grid(row=4, column=0, columnspan=2, pady=10)
 
         # Опция для минимальной высоты строки
         self.auth_frame.grid_rowconfigure(0, weight=1)
@@ -45,31 +60,45 @@ class AuthForm:
 
     def set_login_success_callback(self, callback):
         self.login_success_callback = callback
-
+    def registration(self):
+        self.auth_frame.destroy()
+        self.registration_page = RegistrationFrame(self.root)
+    
+    
     def login(self):
         # Метод для обработки входа
         login = self.entry_login.get()
         password = self.entry_password.get()
-        if login == self.correct_login and password == self.correct_password:
-            print("Успешная авторизация РАБА!")
-            self.auth_frame.destroy()
-            self.blocks_page = ClientRegistrator(self.root)
-            # Вызываем callback-функцию при успешной авторизации
-            if self.login_success_callback:
-                self.login_success_callback()
-        elif login == self.correct_boss_login and password == self.correct_password:
-            print("Успешная авторизация БОССА!")
-            self.auth_frame.destroy()
-            # Создаем экземпляр ManagerPage
-            self.manager_page = ManagerPage(self.root)
-            # Вызываем метод show_page для отображения страницы руководителя
-            self.manager_page.show_page()
-            # Вызываем callback-функцию при успешной авторизации
-            if self.login_success_callback:
-                self.login_success_callback()
-        else:
-            print("Ошибка авторизации. Пожалуйста, проверьте введенные данные.")
 
+        # Получаем хэш пароля из базы данных
+        self.cursor.execute("SELECT password_hash FROM authorisation WHERE login=%s", (login,))
+        result = self.cursor.fetchone()
+        print(result[0])
+
+        if result:
+            hashed_password_from_db = result[0]
+            # Ensure that hashed_password_from_db is of type bytes
+            if isinstance(hashed_password_from_db, str):
+                hashed_password_from_db = hashed_password_from_db.encode('utf-8')
+            if bcrypt.checkpw(password.encode('utf-8'), hashed_password_from_db) and login != "BOSS":
+                print("Успешная авторизация!")
+                self.auth_frame.destroy()
+                self.blocks_page = ClientRegistrator(self.root)
+                # Вызываем callback-функцию при успешной авторизации
+                if self.login_success_callback:
+                    self.login_success_callback()
+            elif  bcrypt.checkpw(password.encode('utf-8'), hashed_password_from_db) and login == "BOSS":
+                print("Успешная авторизация БОССА!")
+                self.auth_frame.destroy()
+                # Создаем экземпляр ManagerPage
+                self.manager_page = ManagerPage(self.root)
+                # Вызываем метод show_page для отображения страницы руководителя
+                self.manager_page.show_page()
+                # Вызываем callback-функцию при успешной авторизации
+                if self.login_success_callback:
+                    self.login_success_callback()
+            else:
+                print("Неверный пароль.")
 
 
 if __name__ == "__main__":

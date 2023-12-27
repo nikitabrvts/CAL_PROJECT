@@ -62,6 +62,18 @@ class Blocks:
         self.entry_tax = ttk.Entry(self.investment_frame, style="TEntry")
         self.entry_tax.grid(row=10, column=1, pady=5)
 
+        self.start_invest = (
+            self.entry_tax.get() +
+            (self.entry_service.get()) +
+            (self.entry_smm.get()) +
+            (self.entry_guard.get()) +
+            (self.entry_fot.get()) +
+            (self.entry_documents.get()) +
+            (self.entry_products.get()) +
+            (self.entry_equipment.get()) +
+            (self.entry_repair.get()) +
+            (self.entry_initial_rent.get())
+            ) 
         #
         #
         #
@@ -162,7 +174,7 @@ class Blocks:
         # Кнопка "Рассчитать"
         self.calculator = Calculator(self)
         self.calculate_button = ttk.Button(root, text="Рассчитать", command=self.calculate)
-        self.calculate_button.grid(row=3, column=0, pady=10)
+        self.calculate_button.grid(row=0, column=4, pady=10)
 
         # Опция для минимальной высоты строки
         root.grid_rowconfigure(3, weight=1)
@@ -171,8 +183,9 @@ class Blocks:
         self.calculator = Calculator(self)
 
     def calculate(self):
+        print(self.start_invest)
         # Вызываем метод calculate из экземпляра класса Calculator
-        self.calculator.calculate()
+        # self.calculator.calculate()
 
     def show_results(self, total_income, total_expenses):
         # Создаем новый блок с результатами
