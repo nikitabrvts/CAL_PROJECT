@@ -185,18 +185,20 @@ class Blocks:
 
     def payback_task(self):
         
-        initial_rent = self.entry_initial_rent.get()
-        repair = self.entry_repair.get()
-        equipment = self.entry_equipment.get()
-        products = self.entry_products.get()
-        documents = self.entry_documents.get()
-        fot = self.entry_fot.get()
-        guard = self.entry_guard.get()
-        smm = self.entry_smm.get()
-        service = self.entry_service.get()
-        tax = self.entry_tax.get()
+        initial_rent = int(self.entry_initial_rent.get())
+        repair = int(self.entry_repair.get())
+        equipment = int(self.entry_equipment.get())
+        products = int(self.entry_products.get())
+        documents = int(self.entry_documents.get())
+        fot = int(self.entry_fot.get())
+        guard = int(self.entry_guard.get())
+        smm = int(self.entry_smm.get())
+        service = int(self.entry_service.get())
+        tax = int(self.entry_tax.get())
 
         ivest = initial_rent + repair + equipment + products + documents + fot + guard + smm + service + tax
+
+        print("invest ", ivest)
 
         ######
     
@@ -211,7 +213,6 @@ class Blocks:
         generator = VisitorsGenerator()
         num_av_check = int(av_check)
         visitors_list = generator.generate_visitors(input_numbers)
-        print("people по месяцам:", visitors_list)
 
         result_list = [int(x) * num_av_check for x in visitors_list]
         print("выручка по месяцам:", result_list)
@@ -226,8 +227,10 @@ class Blocks:
         entry_month_smm = self.entry_month_smm.get()
         entry_month_service= self.entry_month_service.get()
 
-        expenses = entry_month_rent + entry_month_guard + entry_month_products + entry_month_repair + entry_month_fot + entry_month_service + entry_month_smm
+        expenses = int(entry_month_rent) + int(entry_month_guard) + int(entry_month_products) + int(entry_month_repair) + int(entry_month_fot) + int(entry_month_service) + int(entry_month_smm)
 
+        print("expenses " ,expenses)
+        
         self.payback = PaybackCalculator(
             int(ivest),
             result_list,
