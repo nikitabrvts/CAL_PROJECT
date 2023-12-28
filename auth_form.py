@@ -21,12 +21,6 @@ class AuthForm:
         style.configure("TEntry", background="#ffffff")  # Цвет фона для полей ввода
         style.configure("TButton", background="#a0a033")  # Цвет фона для кнопки
 
-        # Задаем правильный логин и пароль для проверки
-        self.correct_boss_login = "BOSS"
-        self.correct_login = "SLAVE"
-        self.correct_password = ""
-
-
         self.conn = psycopg2.connect(
         host="localhost",
         database="postgres",

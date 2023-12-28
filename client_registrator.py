@@ -4,6 +4,7 @@ from blocks import Blocks
 import psycopg2
 import uuid
 from feedback import Feedback
+from psycopg2 import sql
 
 
 class ClientRegistrator:
@@ -13,21 +14,20 @@ class ClientRegistrator:
 
         self.root.title("Информация о клиенте")
 
-        # Подключаемся к базе даннх
+        # Создаем блок "Менеджер"
+        self.contract_frame = ttk.Frame(root, style="TFrame")
+        self.contract_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
+        ttk.Label(self.contract_frame, text="Ответственный менеджер", style="TLabel").grid(row=0, column=0, columnspan=2, pady=5)
+        # Поля ввода
+        ttk.Label(self.contract_frame, text="ID сотрудника:").grid(row=1, column=0, pady=5)
+        self.entry_manager_id = ttk.Entry(self.contract_frame)
+        self.entry_manager_id.grid(row=1, column=1, pady=5)
 
-        self.conn = psycopg2.connect(
-        host="localhost",
-        database="postgres",
-        user="postgres",
-        password="123"
-        )
-
-        self.cursor = self.conn.cursor()
 
         # Создаем блок "Информация о клиенте"
         self.client_frame = ttk.Frame(root, style="TFrame")
-        self.client_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+        self.client_frame.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
 
         ttk.Label(self.client_frame, text="Информация о клиенте", style="TLabel").grid(row=0, column=0, columnspan=2, pady=5)
 
@@ -48,10 +48,15 @@ class ClientRegistrator:
         self.entry_phone = ttk.Entry(self.client_frame)
         self.entry_phone.grid(row=4, column=1, pady=5)
 
+        ttk.Label(self.client_frame, text="Почта:").grid(row=5, column=0, pady=5)
+        self.entry_email = ttk.Entry(self.client_frame)
+        self.entry_email.grid(row=5, column=1, pady=5)
+
+
         # Кнопка "Перейти к расчету"
-        ttk.Button(self.client_frame, text="Перейти к расчету", command=self.register_client).grid(row=5, column=0, columnspan=2, pady=10)
+        ttk.Button(self.client_frame, text="Перейти к расчету", command=self.register_client).grid(row=6, column=0, columnspan=2, pady=10)
         # Кнопка "Обратная связь"        
-        ttk.Button(self.client_frame, text="Обратная связь", command=self.go_to_feedback_page).grid(row=6, column=0, columnspan=2, pady=10)
+        ttk.Button(self.client_frame, text="Записать отзыв клиента", command=self.go_to_feedback_page).grid(row=7, column=0, columnspan=2, pady=10)
 
         # Опция для минимальной высоты строки
         self.client_frame.grid_rowconfigure(0, weight=1)
@@ -67,22 +72,58 @@ class ClientRegistrator:
 
     def register_client(self):
         # Получаем данные из полей ввода
-        last_name = self.entry_last_name.get()
         first_name = self.entry_first_name.get()
         middle_name = self.entry_middle_name.get()
+        last_name = self.entry_last_name.get()
         phone = self.entry_phone.get()
+        email = self.entry_email.get()
+        manager_id = self.entry_manager_id.get()
 
-        self.cursor.execute("INSERT INTO client (name, surname, middle_name, phone_number) VALUES (%s, %s, %s, %s)",
-                            (last_name, first_name, middle_name, phone))
-        self.conn.commit()
-        # Закрываем соединение
-        self.conn.close()
+        # Подключение к базе данных PostgreSQL 
+        connection = psycopg2.connect(
+            host="localhost",
+            database="postgres",
+            user="postgres",
+            password="123"
+        )
+        cursor = connection.cursor()
 
-        # Переходим к расчету (ваш код)
-        print("Переход к расчету для клиента:", first_name, last_name, "контракт № ", self.contract_number)
+        # SQL-запрос для вставки данных пользователя в таблицу
+        query = "INSERT INTO client (name, surname, middle_name, phone_number, email) VALUES (%s, %s, %s, %s, %s);"
 
+        # Выполнение SQL-запроса
+        cursor.execute(query, (first_name, last_name, middle_name, phone, email))
+
+        # Применение изменений в базе данных
+        connection.commit()
+
+
+        # SQL-запрос для получения id клиента по заданным параметрам
+        query = "SELECT client_id FROM client WHERE surname = %s AND name = %s AND middle_name = %s AND phone_number = %s;"
+        cursor.execute(query, (last_name, first_name, middle_name, phone))
+
+        # Получаем результат запроса
+        result = cursor.fetchone()
+
+        result = (result[0]) 
+
+        query = "INSERT INTO contract (client_id, manager_id) VALUES (%s, %s);"
+        cursor.execute(query, (result, manager_id))
+        connection.commit()
+        query = "SELECT MAX(contract_id) FROM contract WHERE client_id = %s;"
+        cursor.execute(query, (result,))
+        result = cursor.fetchone()
+        result = (result[0]) 
+
+
+
+
+        # Закрытие соединения
+        connection.close()
+        self.contract_frame.destroy()
         self.client_frame.destroy()
-        self.blocks_page = Blocks(self.root)
+
+        self.blocks_page = Blocks(self.root, result)
 
 
 if __name__ == "__main__":

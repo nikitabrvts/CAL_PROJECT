@@ -1,13 +1,18 @@
 import tkinter as tk
 from tkinter import ttk
+import psycopg2
 from calculator import Calculator
 from pdf_exporter import PDFExporter
 from plotter import Plotter
+from time_to_payback import PaybackCalculator
+from visitors_generator import VisitorsGenerator
 
 class Blocks:
-    def __init__(self, root):
+    def __init__(self, root, result):
 
         self.root = root
+        self.result = result
+
         self.root.title("Блоки с данными")
 
         # Создаем стиль для виджетов ttk
@@ -22,7 +27,7 @@ class Blocks:
 
         ttk.Label(self.investment_frame, text="Первоначальные инвестиции", style="TLabel").grid(row=0, column=0, pady=5)
 
-        ttk.Label(self.investment_frame, text="Аренда:", style="TLabel").grid(row=1, column=0, pady=10,  sticky="w", padx=5)
+        ttk.Label(self.investment_frame, text="Аренда", style="TLabel").grid(row=1, column=0, pady=10,  sticky="w", padx=5)
         self.entry_initial_rent = ttk.Entry(self.investment_frame, style="TEntry")
         self.entry_initial_rent.grid(row=1, column=1, pady=5)
 
@@ -62,18 +67,7 @@ class Blocks:
         self.entry_tax = ttk.Entry(self.investment_frame, style="TEntry")
         self.entry_tax.grid(row=10, column=1, pady=5)
 
-        self.start_invest = (
-            self.entry_tax.get() +
-            (self.entry_service.get()) +
-            (self.entry_smm.get()) +
-            (self.entry_guard.get()) +
-            (self.entry_fot.get()) +
-            (self.entry_documents.get()) +
-            (self.entry_products.get()) +
-            (self.entry_equipment.get()) +
-            (self.entry_repair.get()) +
-            (self.entry_initial_rent.get())
-            ) 
+
         #
         #
         #
@@ -92,24 +86,24 @@ class Blocks:
         ttk.Label(self.income_frame, text="Доходы", style="TLabel").grid(row=0, column=0, pady=5)
 
         ttk.Label(self.income_frame, text="Количество посетителей (1 мес.):", style="TLabel").grid(row=1, column=0, pady=5)
-        self.entry_visitors = ttk.Entry(self.income_frame, style="TEntry")
-        self.entry_visitors.grid(row=1, column=1, pady=5)
+        self.entry_visitors1 = ttk.Entry(self.income_frame, style="TEntry")
+        self.entry_visitors1.grid(row=1, column=1, pady=5)
 
         ttk.Label(self.income_frame, text="Количество посетителей (2 мес.):", style="TLabel").grid(row=2, column=0, pady=5)
-        self.entry_visitors = ttk.Entry(self.income_frame, style="TEntry")
-        self.entry_visitors.grid(row=2, column=1, pady=5)        
+        self.entry_visitors2 = ttk.Entry(self.income_frame, style="TEntry")
+        self.entry_visitors2.grid(row=2, column=1, pady=5)        
 
         ttk.Label(self.income_frame, text="Количество посетителей (3 мес.):", style="TLabel").grid(row=3, column=0, pady=5)
-        self.entry_visitors = ttk.Entry(self.income_frame, style="TEntry")
-        self.entry_visitors.grid(row=3, column=1, pady=5)
+        self.entry_visitors3 = ttk.Entry(self.income_frame, style="TEntry")
+        self.entry_visitors3.grid(row=3, column=1, pady=5)
 
         ttk.Label(self.income_frame, text="Количество посетителей (4 мес.):", style="TLabel").grid(row=4, column=0, pady=5)
-        self.entry_visitors = ttk.Entry(self.income_frame, style="TEntry")
-        self.entry_visitors.grid(row=4, column=1, pady=5)
+        self.entry_visitors4 = ttk.Entry(self.income_frame, style="TEntry")
+        self.entry_visitors4.grid(row=4, column=1, pady=5)
 
         ttk.Label(self.income_frame, text="Количество посетителей (5 мес.):", style="TLabel").grid(row=5, column=0, pady=5)
-        self.entry_visitors = ttk.Entry(self.income_frame, style="TEntry")
-        self.entry_visitors.grid(row=5, column=1, pady=5)
+        self.entry_visitors5 = ttk.Entry(self.income_frame, style="TEntry")
+        self.entry_visitors5.grid(row=5, column=1, pady=5)
 
         ttk.Label(self.income_frame, text="Средний чек:", style="TLabel").grid(row=6, column=0, pady=5,  sticky="w", padx=5)
         self.entry_average_check = ttk.Entry(self.income_frame, style="TEntry")
@@ -160,9 +154,6 @@ class Blocks:
         self.entry_month_service = ttk.Entry(self.expenses_frame, style="TEntry")
         self.entry_month_service.grid(row=7, column=1, pady=5)
 
-
-        # Добавьте другие поля для "Расходы" по аналогии
-
         # Опция для минимальной высоты строки
         self.expenses_frame.grid_rowconfigure(0, weight=1)
         self.expenses_frame.grid_rowconfigure(1, weight=1)
@@ -173,14 +164,78 @@ class Blocks:
 
         # Кнопка "Рассчитать"
         self.calculator = Calculator(self)
-        self.calculate_button = ttk.Button(root, text="Рассчитать", command=self.calculate)
+        self.calculate_button = ttk.Button(root, text="из полей в 3 таблицы", command=self.write_invested_to_database)
         self.calculate_button.grid(row=0, column=4, pady=10)
+
+        # Кнопка "Рассчитать"
+        self.calculator = Calculator(self)
+        self.calculate_button = ttk.Button(root, text="вызов калькулятора", command=self.payback_task)
+        self.calculate_button.grid(row=1, column=4, pady=10)
+
+        # Кнопка "Рассчитать"
+        self.calculator = Calculator(self)
+        self.calculate_button = ttk.Button(root, text="Рассчитать", command=self.write_invested_to_database)
+        self.calculate_button.grid(row=2, column=4, pady=10)
 
         # Опция для минимальной высоты строки
         root.grid_rowconfigure(3, weight=1)
 
         # Создаем экземпляр класса Calculator, передавая текущий экземпляр Blocks
         self.calculator = Calculator(self)
+
+    def payback_task(self):
+        
+        initial_rent = self.entry_initial_rent.get()
+        repair = self.entry_repair.get()
+        equipment = self.entry_equipment.get()
+        products = self.entry_products.get()
+        documents = self.entry_documents.get()
+        fot = self.entry_fot.get()
+        guard = self.entry_guard.get()
+        smm = self.entry_smm.get()
+        service = self.entry_service.get()
+        tax = self.entry_tax.get()
+
+        ivest = initial_rent + repair + equipment + products + documents + fot + guard + smm + service + tax
+
+        ######
+    
+        entry_v1 = self.entry_visitors1.get()
+        entry_v2 = self.entry_visitors2.get()
+        entry_v3 = self.entry_visitors3.get()
+        entry_v4 = self.entry_visitors4.get()
+        entry_v5 = self.entry_visitors5.get()
+        av_check = int(self.entry_average_check.get())
+
+        input_numbers = [entry_v1, entry_v2, entry_v3, entry_v4, entry_v5]
+        generator = VisitorsGenerator()
+        num_av_check = int(av_check)
+        visitors_list = generator.generate_visitors(input_numbers)
+        print("people по месяцам:", visitors_list)
+
+        result_list = [int(x) * num_av_check for x in visitors_list]
+        print("выручка по месяцам:", result_list)
+
+        ######
+
+        entry_month_rent = self.entry_month_rent.get()
+        entry_month_repair = self.entry_month_repair.get()
+        entry_month_products = self.entry_month_products.get()
+        entry_month_fot = self.entry_month_fot.get()
+        entry_month_guard = self.entry_month_guard.get()
+        entry_month_smm = self.entry_month_smm.get()
+        entry_month_service= self.entry_month_service.get()
+
+        expenses = entry_month_rent + entry_month_guard + entry_month_products + entry_month_repair + entry_month_fot + entry_month_service + entry_month_smm
+
+        self.payback = PaybackCalculator(
+            int(ivest),
+            result_list,
+            int(expenses)
+        )
+
+
+    #####
 
     def calculate(self):
         print(self.start_invest)
@@ -221,8 +276,88 @@ class Blocks:
         self.income_frame.destroy()
         self.expenses_frame.destroy()
 
+#####
+#####
+#####
+#####
+#####
+#####
+        
+    def write_invested_to_database(self):
+        # Получаем значения из полей ввода
+        contract = self.result
+        initial_rent = self.entry_initial_rent.get()
+        repair = self.entry_repair.get()
+        equipment = self.entry_equipment.get()
+        products = self.entry_products.get()
+        documents = self.entry_documents.get()
+        fot = self.entry_fot.get()
+        guard = self.entry_guard.get()
+        smm = self.entry_smm.get()
+        service = self.entry_service.get()
+        tax = self.entry_tax.get()
+
+        ######
+        
+        entry_v1 = self.entry_visitors1.get()
+        entry_v2 = self.entry_visitors2.get()
+        entry_v3 = self.entry_visitors3.get()
+        entry_v4 = self.entry_visitors4.get()
+        entry_v5 = self.entry_visitors5.get()
+        av_check = self.entry_average_check.get()
+
+        ######
+
+        entry_month_rent = self.entry_month_rent.get()
+        entry_month_repair = self.entry_month_repair.get()
+        entry_month_products = self.entry_month_products.get()
+        entry_month_fot = self.entry_month_fot.get()
+        entry_month_guard = self.entry_month_guard.get()
+        entry_month_smm = self.entry_month_smm.get()
+        entry_month_service= self.entry_month_service.get()
+
+        # Подключение к базе данных PostgreSQL
+        connection = psycopg2.connect(
+            host="localhost",
+            database="postgres",
+            user="postgres",
+            password="123"
+        )
+        cursor = connection.cursor()
+
+        query = "INSERT INTO invested (contract_id, rent, repair, equipment, products, documents, salary, security, publicity, utility_costs, taxes) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
+        cursor.execute(query, (contract, initial_rent, repair, equipment, products, documents, fot, guard, smm, service, tax))
+        connection.commit()
+
+        ###
+
+        query = "INSERT INTO income (contract_id, month, visitor_count, avg_check) VALUES (%s, %s, %s, %s);"
+        cursor.execute(query, (contract, 1, entry_v1, av_check))
+        connection.commit()
+        query = "INSERT INTO income (contract_id, month, visitor_count, avg_check) VALUES (%s, %s, %s, %s);"
+        cursor.execute(query, (contract, 2, entry_v2, av_check))
+        connection.commit()
+        query = "INSERT INTO income (contract_id, month, visitor_count, avg_check) VALUES (%s, %s, %s, %s);"
+        cursor.execute(query, (contract, 3, entry_v3, av_check))
+        connection.commit()
+        query = "INSERT INTO income (contract_id, month, visitor_count, avg_check) VALUES (%s, %s, %s, %s);"
+        cursor.execute(query, (contract, 4, entry_v4, av_check))
+        connection.commit()
+        query = "INSERT INTO income (contract_id, month, visitor_count, avg_check) VALUES (%s, %s, %s, %s);"
+        cursor.execute(query, (contract, 5, entry_v5, av_check))
+        connection.commit()
+
+        ###
+
+        query = "INSERT INTO expenses (contract_id, rent, repair, products, salary, security, publicity, utility_costs) VALUES (%s, %s, %s, %s, %s, %s, %s, %s);"
+        cursor.execute(query, (contract ,entry_month_rent, entry_month_repair, entry_month_products, entry_month_fot, entry_month_guard, entry_month_smm, entry_month_service))
+        connection.commit()        
+
+        # Закрытие соединения
+        connection.close()        
+
 
 if __name__ == "__main__":
     root = tk.Tk()
-    app = Blocks(root)
+    app = Blocks(root, 3)
     root.mainloop()
