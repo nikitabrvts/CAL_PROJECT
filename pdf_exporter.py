@@ -3,38 +3,37 @@ from matplotlib.backends.backend_pdf import PdfPages
 import matplotlib.pyplot as plt
 import numpy as np
 import fitz
+from time_to_payback import PaybackCalculator
 
 class PDFExporter:
-    def __init__(self, filename):
+    def __init__(self, initial_budget, total_income, monthly_expenses, filename):
         self.filename = filename
+        self.initial_budget = initial_budget
+        self.total_income = total_income
+        self.monthly_expenses = int(monthly_expenses)
 
-    def export_to_pdf(self, total_income, total_expenses):
+        ###
+        PDFExporter.export_to_pdf(self)
+        ###
+
+
+    def export_to_pdf(self):
         # Создаем файл PDF
         with PdfPages(self.filename) as pdf:
             # Страница 1: График
-            fig, ax = plt.subplots()
-            X = np.linspace(-5, 5, 100)
-            ax.plot(X, np.sin(X))
-            pdf.savefig(fig)
-            plt.close()
-
-
+            self.ext_gr = PaybackCalculator(
+            int(self.initial_budget),
+            self.total_income,
+            int(self.monthly_expenses)
+            )
+            self.ext_gr.plot_payback_graph
         
-
-            text_filename = "text_page.pdf"
-            c = canvas.Canvas(text_filename)
-            c.drawString(100, 750, f"Overall income: {total_income}")
-            c.drawString(100, 730, f"Overall expenses: {total_expenses}")
-            c.save()
 
         def merge_pdfs(input_files, output_filename):
             pdf_writer = fitz.open()
             input_file = PdfPages("results.pdf")
-
-
             for input_file in input_files:
                 pdf = PdfPages("results.pdf")
-
                 pdf_reader = fitz.open(input_file)
                 pdf_writer.insert_pdf(pdf_reader)
 

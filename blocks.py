@@ -174,7 +174,7 @@ class Blocks:
 
         # Кнопка "Рассчитать"
         self.calculator = Calculator(self)
-        self.calculate_button = ttk.Button(root, text="Рассчитать", command=self.write_invested_to_database)
+        self.calculate_button = ttk.Button(root, text="PDF", command=self.export)
         self.calculate_button.grid(row=2, column=4, pady=10)
 
         # Опция для минимальной высоты строки
@@ -196,9 +196,9 @@ class Blocks:
         service = int(self.entry_service.get())
         tax = int(self.entry_tax.get())
 
-        ivest = initial_rent + repair + equipment + products + documents + fot + guard + smm + service + tax
+        self.ivest = initial_rent + repair + equipment + products + documents + fot + guard + smm + service + tax
 
-        print("invest ", ivest)
+        #print("invest ", ivest)
 
         ######
     
@@ -208,14 +208,12 @@ class Blocks:
         entry_v4 = self.entry_visitors4.get()
         entry_v5 = self.entry_visitors5.get()
         av_check = int(self.entry_average_check.get())
-
         input_numbers = [entry_v1, entry_v2, entry_v3, entry_v4, entry_v5]
         generator = VisitorsGenerator()
         num_av_check = int(av_check)
         visitors_list = generator.generate_visitors(input_numbers)
-
-        result_list = [int(x) * num_av_check for x in visitors_list]
-        print("выручка по месяцам:", result_list)
+        self.result_list = [int(x) * num_av_check for x in visitors_list]
+        #print("выручка по месяцам:", result_list)
 
         ######
 
@@ -226,18 +224,61 @@ class Blocks:
         entry_month_guard = self.entry_month_guard.get()
         entry_month_smm = self.entry_month_smm.get()
         entry_month_service= self.entry_month_service.get()
+        self.expenses = int(entry_month_rent) + int(entry_month_guard) + int(entry_month_products) + int(entry_month_repair) + int(entry_month_fot) + int(entry_month_service) + int(entry_month_smm)
 
-        expenses = int(entry_month_rent) + int(entry_month_guard) + int(entry_month_products) + int(entry_month_repair) + int(entry_month_fot) + int(entry_month_service) + int(entry_month_smm)
-
-        print("expenses " ,expenses)
+        #print("expenses " ,expenses)
         
         self.payback = PaybackCalculator(
-            int(ivest),
-            result_list,
-            int(expenses)
+            int(self.ivest),
+            self.result_list,
+            int(self.expenses)
         )
 
+    #####
+    def export(self):
+        initial_rent = int(self.entry_initial_rent.get())
+        repair = int(self.entry_repair.get())
+        equipment = int(self.entry_equipment.get())
+        products = int(self.entry_products.get())
+        documents = int(self.entry_documents.get())
+        fot = int(self.entry_fot.get())
+        guard = int(self.entry_guard.get())
+        smm = int(self.entry_smm.get())
+        service = int(self.entry_service.get())
+        tax = int(self.entry_tax.get())
+        self.ivest = initial_rent + repair + equipment + products + documents + fot + guard + smm + service + tax
+        
+        entry_v1 = self.entry_visitors1.get()
+        entry_v2 = self.entry_visitors2.get()
+        entry_v3 = self.entry_visitors3.get()
+        entry_v4 = self.entry_visitors4.get()
+        entry_v5 = self.entry_visitors5.get()
+        av_check = int(self.entry_average_check.get())
+        input_numbers = [entry_v1, entry_v2, entry_v3, entry_v4, entry_v5]
+        generator = VisitorsGenerator()
+        num_av_check = int(av_check)
+        visitors_list = generator.generate_visitors(input_numbers)
+        self.result_list = [int(x) * num_av_check for x in visitors_list]
 
+        entry_month_rent = self.entry_month_rent.get()
+        entry_month_repair = self.entry_month_repair.get()
+        entry_month_products = self.entry_month_products.get()
+        entry_month_fot = self.entry_month_fot.get()
+        entry_month_guard = self.entry_month_guard.get()
+        entry_month_smm = self.entry_month_smm.get()
+        entry_month_service= self.entry_month_service.get()
+        self.expenses = int(entry_month_rent) + int(entry_month_guard) + int(entry_month_products) + int(entry_month_repair) + int(entry_month_fot) + int(entry_month_service) + int(entry_month_smm)
+
+        self.draw_me_pdf = PDFExporter(
+            int(self.ivest),
+            self.result_list,
+            int(self.expenses),
+            'graph.pdf'
+        )
+            
+        
+
+        
     #####
 
     def calculate(self):

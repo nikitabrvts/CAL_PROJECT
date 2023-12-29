@@ -1,5 +1,6 @@
 import random
 
+
 class VisitorsGenerator:
     @staticmethod
     def generate_visitors(numbers):
