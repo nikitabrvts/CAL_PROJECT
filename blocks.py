@@ -1,19 +1,19 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import Canvas, ttk
 import psycopg2
 from calculator import Calculator
 from pdf_exporter import PDFExporter
 from plotter import Plotter
 from time_to_payback import PaybackCalculator
 from visitors_generator import VisitorsGenerator
+from final_block import FinalBlock
 
 class Blocks:
     def __init__(self, root, result):
-
         self.root = root
         self.result = result
-
         self.root.title("Блоки с данными")
+        self.months =   0
 
         # Создаем стиль для виджетов ttk
         style = ttk.Style()
@@ -164,14 +164,9 @@ class Blocks:
 
         # Кнопка "Рассчитать"
         self.calculator = Calculator(self)
-        self.calculate_button = ttk.Button(root, text="из полей в 3 таблицы", command=self.write_invested_to_database)
-        self.calculate_button.grid(row=0, column=4, pady=10)
-
-        # Кнопка "Рассчитать"
-        self.calculator = Calculator(self)
-        self.calculate_button = ttk.Button(root, text="вызов калькулятора", command=self.payback_task)
+        self.calculate_button = ttk.Button(root, text="вызов калькулятора", command=self.perform_calculations)
         self.calculate_button.grid(row=1, column=4, pady=10)
-
+        
         # Кнопка "Рассчитать"
         self.calculator = Calculator(self)
         self.calculate_button = ttk.Button(root, text="PDF", command=self.export)
@@ -180,9 +175,22 @@ class Blocks:
         # Опция для минимальной высоты строки
         root.grid_rowconfigure(3, weight=1)
 
-        # Создаем экземпляр класса Calculator, передавая текущий экземпляр Blocks
-        self.calculator = Calculator(self)
+    def perform_calculations(self):
+        self.write_invested_to_database()
+        self.payback_task()
+        print (self.ivest, self.months )
+        
 
+
+
+    def write_variables_to_pdf(filename, variable1, variable2):
+    # Создаем PDF-документ
+        pdf_canvas = Canvas.Canvas(filename)
+    # Записываем значения переменных в PDF
+        pdf_canvas.drawString(100, 800, f"Переменная 1: {variable1}")
+        pdf_canvas.drawString(100, 780, f"Переменная 2: {variable2}")
+    # Закрываем PDF-документ
+        pdf_canvas.save()
     def payback_task(self):
         
         initial_rent = int(self.entry_initial_rent.get())
@@ -213,7 +221,6 @@ class Blocks:
         num_av_check = int(av_check)
         visitors_list = generator.generate_visitors(input_numbers)
         self.result_list = [int(x) * num_av_check for x in visitors_list]
-        #print("выручка по месяцам:", result_list)
 
         ######
 
@@ -225,14 +232,27 @@ class Blocks:
         entry_month_smm = self.entry_month_smm.get()
         entry_month_service= self.entry_month_service.get()
         self.expenses = int(entry_month_rent) + int(entry_month_guard) + int(entry_month_products) + int(entry_month_repair) + int(entry_month_fot) + int(entry_month_service) + int(entry_month_smm)
-
-        #print("expenses " ,expenses)
         
+        self.income_frame.destroy()
+        self.investment_frame.destroy()
+        self.expenses_frame.destroy()
+
+        self.final_frame = FinalBlock(self.root,
+                                      self.result,
+                                      self.ivest,
+                                      self.result_list,
+                                      self.expenses)
+        self.final_frame.display_block()
+
         self.payback = PaybackCalculator(
             int(self.ivest),
             self.result_list,
             int(self.expenses)
         )
+        self.payback.plot_payback_graph()
+        self.payback.plot_profit_graph()
+        self.months = self.payback.calculate_payback_time()
+
 
     #####
     def export(self):
@@ -278,7 +298,6 @@ class Blocks:
             
         
 
-        
     #####
 
     def calculate(self):
