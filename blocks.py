@@ -2,11 +2,11 @@ import tkinter as tk
 from tkinter import Canvas, ttk
 import psycopg2
 from calculator import Calculator
-from pdf_exporter import PDFExporter
-from plotter import Plotter
+from pdf_merger import PDFMerger
 from time_to_payback import PaybackCalculator
 from visitors_generator import VisitorsGenerator
 from final_block import FinalBlock
+from reportlab.pdfgen import canvas
 
 class Blocks:
     def __init__(self, root, result):
@@ -167,28 +167,31 @@ class Blocks:
         self.calculate_button = ttk.Button(root, text="вызов калькулятора", command=self.perform_calculations)
         self.calculate_button.grid(row=1, column=4, pady=10)
         
-        # Кнопка "Рассчитать"
-        self.calculator = Calculator(self)
-        self.calculate_button = ttk.Button(root, text="PDF", command=self.export)
-        self.calculate_button.grid(row=2, column=4, pady=10)
-
         # Опция для минимальной высоты строки
         root.grid_rowconfigure(3, weight=1)
 
     def perform_calculations(self):
+        self.calculate_button.destroy()
         self.write_invested_to_database()
         self.payback_task()
-        print (self.ivest, self.months )
+        self.write_variables_to_pdf("1.pdf", self.ivest, self.months )
+        
+        pdf_merger = PDFMerger("RESULT.pdf")
+        pdf_merger.add_pdf("1.pdf")
+        pdf_merger.add_pdf("payback_graph.pdf")
+        pdf_merger.add_pdf("profit_graph.pdf")
+        pdf_merger.merge_pdfs()
+
         
 
 
 
-    def write_variables_to_pdf(filename, variable1, variable2):
+    def write_variables_to_pdf(self, filename, variable1, variable2):
     # Создаем PDF-документ
-        pdf_canvas = Canvas.Canvas(filename)
+        pdf_canvas = canvas.Canvas(filename)
     # Записываем значения переменных в PDF
-        pdf_canvas.drawString(100, 800, f"Переменная 1: {variable1}")
-        pdf_canvas.drawString(100, 780, f"Переменная 2: {variable2}")
+        pdf_canvas.drawString(100, 800, f"Initial investment: {variable1}")
+        pdf_canvas.drawString(100, 780, f"Payback period: {variable2}")
     # Закрываем PDF-документ
         pdf_canvas.save()
     def payback_task(self):
@@ -253,91 +256,9 @@ class Blocks:
         self.payback.plot_profit_graph()
         self.months = self.payback.calculate_payback_time()
 
-
-    #####
-    def export(self):
-        initial_rent = int(self.entry_initial_rent.get())
-        repair = int(self.entry_repair.get())
-        equipment = int(self.entry_equipment.get())
-        products = int(self.entry_products.get())
-        documents = int(self.entry_documents.get())
-        fot = int(self.entry_fot.get())
-        guard = int(self.entry_guard.get())
-        smm = int(self.entry_smm.get())
-        service = int(self.entry_service.get())
-        tax = int(self.entry_tax.get())
-        self.ivest = initial_rent + repair + equipment + products + documents + fot + guard + smm + service + tax
-        
-        entry_v1 = self.entry_visitors1.get()
-        entry_v2 = self.entry_visitors2.get()
-        entry_v3 = self.entry_visitors3.get()
-        entry_v4 = self.entry_visitors4.get()
-        entry_v5 = self.entry_visitors5.get()
-        av_check = int(self.entry_average_check.get())
-        input_numbers = [entry_v1, entry_v2, entry_v3, entry_v4, entry_v5]
-        generator = VisitorsGenerator()
-        num_av_check = int(av_check)
-        visitors_list = generator.generate_visitors(input_numbers)
-        self.result_list = [int(x) * num_av_check for x in visitors_list]
-
-        entry_month_rent = self.entry_month_rent.get()
-        entry_month_repair = self.entry_month_repair.get()
-        entry_month_products = self.entry_month_products.get()
-        entry_month_fot = self.entry_month_fot.get()
-        entry_month_guard = self.entry_month_guard.get()
-        entry_month_smm = self.entry_month_smm.get()
-        entry_month_service= self.entry_month_service.get()
-        self.expenses = int(entry_month_rent) + int(entry_month_guard) + int(entry_month_products) + int(entry_month_repair) + int(entry_month_fot) + int(entry_month_service) + int(entry_month_smm)
-
-        self.draw_me_pdf = PDFExporter(
-            int(self.ivest),
-            self.result_list,
-            int(self.expenses),
-            'graph.pdf'
-        )
-            
         
 
     #####
-
-    def calculate(self):
-        print(self.start_invest)
-        # Вызываем метод calculate из экземпляра класса Calculator
-        # self.calculator.calculate()
-
-    def show_results(self, total_income, total_expenses):
-        # Создаем новый блок с результатами
-        result_frame = ttk.Frame(self.root, style="TFrame")
-        result_frame.grid(row=4, column=0, padx=10, pady=10, sticky="nsew")
-
-        # Создаем экземпляр класса PDFExporter
-        self.pdf_exporter = PDFExporter("results.pdf")
-
-        # Добавляем кнопку "Экспорт в PDF"
-        ttk.Button(self.root, text="Экспорт в PDF", command=lambda: self.pdf_exporter.export_to_pdf(total_income, total_expenses)).grid(row=2, column=3, pady=10)
-
-        # Выводим результаты в новый блок
-        ttk.Label(result_frame, text=f"Общий доход: {total_income}").grid(row=0, column=0, pady=5)
-        ttk.Label(result_frame, text=f"Общие расходы: {total_expenses}").grid(row=1, column=0, pady=5)
-
-        # Переменные для хранения данных
-        self.total_income = tk.StringVar()
-        self.total_expenses = tk.StringVar()
-
-        # Опция для минимальной высоты строки
-        self.root.grid_rowconfigure(4, weight=1)
-
-        # Добавляем график рентабельности по месяцам
-        monthly_data = [total_income, 12000, 8000, 15000]  # Пример данных по месяцам
-        plotter = Plotter(result_frame, monthly_data)
-        plotter.plot_profitability_chart()
-
-        # Скрываем кнопку "Рассчитать"
-        self.calculate_button.grid_forget()
-        # Очищаем старые блоки
-        self.investment_frame.destroy()
-        self.income_frame.destroy()
-        self.expenses_frame.destroy()
 
 #####
 #####

@@ -3,8 +3,6 @@
 import tkinter as tk
 from tkinter import ttk
 from auth_form import AuthForm
-from blocks import Blocks
-from plotter import Plotter
 from matplotlib.backends.backend_pdf import PdfPages
 
 

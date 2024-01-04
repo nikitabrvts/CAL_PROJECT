@@ -10,7 +10,7 @@ from psycopg2 import sql
 class ClientRegistrator:
     def __init__(self, root):
         self.root = root
-        self.feedback_instance = Feedback(self.root)
+        #self.feedback_instance = Feedback(self.root)
 
         self.root.title("Информация о клиенте")
 
@@ -67,7 +67,10 @@ class ClientRegistrator:
 
     def go_to_feedback_page(self):
         self.client_frame.destroy()
-        self.feedback_instance
+        self.contract_frame.destroy()
+        print("try feedback")
+        self.feedback_instance = Feedback(self.root)
+
 
 
     def register_client(self):
