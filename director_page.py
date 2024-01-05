@@ -80,19 +80,17 @@ class ManagerPage:
         print(len(visitors_list))
         result_list = [x * income_data[0][3] for x in visitors_list]
         return result_list
-    
     def fetch_expens_data(self, contract_id):
         query = "SELECT * FROM expenses WHERE contract_id = %s;"
         self.cursor.execute(query, ([contract_id]))
         expens_data = self.cursor.fetchall()
         total_expens_data = sum(expens_data[0]) - contract_id 
         return total_expens_data
-    
     def fetch_review_data(self, contract_id):
         query = "SELECT * FROM review WHERE contract_id = %s;"
         self.cursor.execute(query, ([contract_id]))
         review = self.cursor.fetchall()
-        return review
+        return review[0][2]
     
     
 
@@ -134,8 +132,8 @@ class ManagerPage:
     # Создаем PDF-документ
         pdf_canvas = canvas.Canvas(filename)
     # Записываем значения переменных в PDF
-        pdf_canvas.drawString(100, 800, f"Initial investment: {variable1}")
-        pdf_canvas.drawString(100, 780, f"Payback period: {variable2}")
+        pdf_canvas.drawString(100, 800, f"I CAN SAY ABOUT COMPANY: {variable1}")
+        pdf_canvas.drawString(100, 780, f"REVIEW FROM CLIENT: {variable2}")
     # Закрываем PDF-документ
         pdf_canvas.save()
 
