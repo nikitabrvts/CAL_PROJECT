@@ -256,10 +256,6 @@ class Blocks:
         self.payback.plot_profit_graph()
         self.months = self.payback.calculate_payback_time()
 
-        
-
-    #####
-
 #####
 #####
 #####

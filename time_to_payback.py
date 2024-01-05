@@ -68,7 +68,6 @@ class PaybackCalculator:
     def plot_profit_graph(self):
         # Call the profitability method and store the results in a variable
         profitability_results = self.profitability()   
-        print(profitability_results)
 
         # Построение графика
         plt.plot(range(1, 37), profitability_results, marker='o', label='Рентабельность')

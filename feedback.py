@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import ttk
 import sqlite3
 
+import psycopg2
+
 class Feedback:
     def __init__(self, root):
     
@@ -32,27 +34,17 @@ class Feedback:
         contract_number = self.entry_contract_number.get()
         review = self.entry_review.get()
 
-        if not contract_number or not review:
-            print("Заполните все поля!")
-            return
+        connection = psycopg2.connect(
+            host="localhost",
+            database="postgres",
+            user="postgres",
+            password="123")
+        cursor = connection.cursor()
 
-        # Здесь добавьте код для записи отзыва в базу данных для клиента с указанным номером договора
-        conn = sqlite3.connect("project_database.db")
-        cursor = conn.cursor()
-
-        # Проверяем существование клиента с указанным номером договора
-        cursor.execute("SELECT * FROM clients WHERE contract_number=?", (contract_number,))
-        client_data = cursor.fetchone()
-
-        if client_data:
-            # Если клиент найден, записываем отзыв
-            cursor.execute("UPDATE clients SET review=? WHERE contract_number=?", (review, contract_number))
-            conn.commit()
-            print("Отзыв успешно отправлен!")
-        else:
-            print("Клиент с указанным номером договора не найден.")
-
-        conn.close()
+        query = "INSERT INTO review (contract_id, text_review) VALUES (%s, %s);"
+        cursor.execute(query, (contract_number, review))
+        connection.commit()        
+        connection.close()
 
 if __name__ == "__main__":
     root = tk.Tk()

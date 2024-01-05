@@ -67,7 +67,6 @@ class AuthForm:
         # Получаем хэш пароля из базы данных
         self.cursor.execute("SELECT password_hash FROM authorisation WHERE login=%s", (login,))
         result = self.cursor.fetchone()
-        print(result[0])
 
         if result:
             hashed_password_from_db = result[0]

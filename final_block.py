@@ -28,7 +28,7 @@ class FinalBlock:
         expens_data = self.fetch_expens_data(contract_id)
         payback_data  = PaybackCalculator(self.initial_budget, self.total_income, self.monthly_expenses)
         payback_month = payback_data.calculate_payback_time()
-        print(payback_month ,"\n") #payback_data.profitobility_month)   
+        #print(payback_month ,"\n") #payback_data.profitobility_month)   
 
        
         self.final_frame = ttk.Frame(root, borderwidth=2, relief="solid", width=400, height=200)
