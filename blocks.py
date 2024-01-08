@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import Canvas, ttk
 import psycopg2
-from calculator import Calculator
 from pdf_merger import PDFMerger
 from time_to_payback import PaybackCalculator
 from visitors_generator import VisitorsGenerator
@@ -163,7 +162,6 @@ class Blocks:
         root.grid_rowconfigure(3, weight=1)
 
         # Кнопка "Рассчитать"
-        self.calculator = Calculator(self)
         self.calculate_button = ttk.Button(root, text="вызов калькулятора", command=self.perform_calculations)
         self.calculate_button.grid(row=1, column=4, pady=10)
         
