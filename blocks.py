@@ -169,6 +169,44 @@ class Blocks:
         root.grid_rowconfigure(3, weight=1)
 
     def perform_calculations(self):
+        self.initial_rent = int(self.entry_initial_rent.get())
+        self.repair = int(self.entry_repair.get())
+        self.equipment = int(self.entry_equipment.get())
+        self.products = int(self.entry_products.get())
+        self.documents = int(self.entry_documents.get())
+        self.fot = int(self.entry_fot.get())
+        self.guard = int(self.entry_guard.get())
+        self.smm = int(self.entry_smm.get())
+        self.service = int(self.entry_service.get())
+        self.tax = int(self.entry_tax.get())
+
+        entry_v1 = self.entry_visitors1.get()
+        entry_v2 = self.entry_visitors2.get()
+        entry_v3 = self.entry_visitors3.get()
+        entry_v4 = self.entry_visitors4.get()
+        entry_v5 = self.entry_visitors5.get()
+        av_check = int(self.entry_average_check.get())
+        input_numbers = [entry_v1, entry_v2, entry_v3, entry_v4, entry_v5]
+        generator = VisitorsGenerator()
+        self.num_av_check = int(av_check)
+        visitors_list = generator.generate_visitors(input_numbers)
+        sum_of_list = 0
+        for i in range(len(visitors_list)):
+            sum_of_list += int(visitors_list[i])
+        self.average = sum_of_list/len(visitors_list)
+        self.result_list = [int(x) * self.num_av_check for x in visitors_list]
+
+        entry_month_rent = self.entry_month_rent.get()
+        entry_month_repair = self.entry_month_repair.get()
+        entry_month_products = self.entry_month_products.get()
+        entry_month_fot = self.entry_month_fot.get()
+        entry_month_guard = self.entry_month_guard.get()
+        entry_month_smm = self.entry_month_smm.get()
+        entry_month_service= self.entry_month_service.get()
+        self.expenses = int(entry_month_rent) + int(entry_month_guard) + int(entry_month_products) + int(entry_month_repair) + int(entry_month_fot) + int(entry_month_service) + int(entry_month_smm)
+
+
+
         self.calculate_button.destroy()
         self.write_invested_to_database()
         self.payback_task()
@@ -188,8 +226,47 @@ class Blocks:
     # Создаем PDF-документ
         pdf_canvas = canvas.Canvas(filename)
     # Записываем значения переменных в PDF
+        pdf_canvas.drawString(100, 820, f"Initial investments and detailing:")
+
         pdf_canvas.drawString(100, 800, f"Initial investment: {variable1}")
         pdf_canvas.drawString(100, 780, f"Payback period: {variable2}")
+        pdf_canvas.drawString(100, 760, f"Initial rent: {self.initial_rent}")
+        pdf_canvas.drawString(100, 740, f"Renovation: {self.repair}")
+        pdf_canvas.drawString(100, 720, f"Equipment: {self.equipment}")
+        pdf_canvas.drawString(100, 700, f"Products: {self.products}")
+        pdf_canvas.drawString(100, 680, f"Documentation: {self.documents}")
+        pdf_canvas.drawString(100, 660, f"Salary: {self.fot}")
+        pdf_canvas.drawString(100, 640, f"Sequrity: {self.guard}")
+        pdf_canvas.drawString(100, 620, f"Social Media Marketing: {self.smm}")
+        pdf_canvas.drawString(100, 600, f"Service: {self.service}")
+        pdf_canvas.drawString(100, 580, f"Taxes: {self.tax}")
+
+        pdf_canvas.drawString(100, 540, f"Visitor and average check: {self.tax}")
+
+        pdf_canvas.drawString(100, 520, f"Average check: {self.num_av_check}")
+        pdf_canvas.drawString(100, 500, f"Average visitors: {self.average}")
+
+        pdf_canvas.drawString(100, 460, f"Monthly expenses:")
+
+        pdf_canvas.drawString(100, 440, f"Average monthly expenses: {self.expenses}")
+
+        self.final_frame = FinalBlock(self.root,
+                              self.result,
+                              self.ivest,
+                              self.result_list,
+                              self.expenses)
+        
+        
+        pdf_canvas.drawString(100, 400, f"Client data: {self.final_frame.for_blocks[0][1]}, {self.final_frame.for_blocks[0][2]}, {self.final_frame.for_blocks[0][3]}, {self.final_frame.for_blocks[0][4]}")
+        pdf_canvas.drawString(100, 380, f"Contract number: {self.final_frame.contract_id}")
+        pdf_canvas.drawString(100, 360, f"Manager ID: {self.final_frame.cd[0][2]}")
+
+
+
+
+
+
+
     # Закрываем PDF-документ
         pdf_canvas.save()
     def payback_task(self):

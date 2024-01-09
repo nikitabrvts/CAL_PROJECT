@@ -22,7 +22,10 @@ class FinalBlock:
         self.total_income = total_income
         self.monthly_expenses = monthly_expenses
         contract_data = self.fetch_contract_data(contract_id)
+        self.cd =contract_data
         client_data = self.fetch_client_data([(contract_data[0][1])])
+        self.for_blocks = client_data
+        self.manager_id = 0
         invest_data = self.fetch_invested_data(contract_id)
         income_data = self.fetch_income_data(contract_id)
         expens_data = self.fetch_expens_data(contract_id)
@@ -98,6 +101,7 @@ class FinalBlock:
 
     def fetch_contract_data(self, contract_id):
         query = "SELECT * FROM contract WHERE contract_id = %s;"
+
         self.cursor.execute(query, (contract_id,))
         contract_data = self.cursor.fetchall()
         return contract_data
