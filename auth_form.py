@@ -73,15 +73,13 @@ class AuthForm:
             # Ensure that hashed_password_from_db is of type bytes
             if isinstance(hashed_password_from_db, str):
                 hashed_password_from_db = hashed_password_from_db.encode('utf-8')
-            if bcrypt.checkpw(password.encode('utf-8'), hashed_password_from_db) and login != "BOSS":
-                print("Успешная авторизация!")
+            if bcrypt.checkpw(password.encode('utf-8'), hashed_password_from_db) and login != "CEO":
                 self.auth_frame.destroy()
                 self.blocks_page = ClientRegistrator(self.root)
                 # Вызываем callback-функцию при успешной авторизации
                 if self.login_success_callback:
                     self.login_success_callback()
-            elif  bcrypt.checkpw(password.encode('utf-8'), hashed_password_from_db) and login == "BOSS":
-                print("Успешная авторизация БОССА!")
+            elif  bcrypt.checkpw(password.encode('utf-8'), hashed_password_from_db) and login == "CEO":
                 self.auth_frame.destroy()
                 # Создаем экземпляр ManagerPage
                 self.manager_page = ManagerPage(self.root)

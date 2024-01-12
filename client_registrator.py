@@ -56,7 +56,7 @@ class ClientRegistrator:
         # Кнопка "Перейти к расчету"
         ttk.Button(self.client_frame, text="Перейти к расчету", command=self.register_client).grid(row=6, column=0, columnspan=2, pady=10)
         # Кнопка "Обратная связь"        
-        ttk.Button(self.client_frame, text="Записать отзыв клиента", command=self.go_to_feedback_page).grid(row=7, column=0, columnspan=2, pady=10)
+        ttk.Button(self.client_frame, text="Обратная связь", command=self.go_to_feedback_page).grid(row=7, column=0, columnspan=2, pady=10)
 
         # Опция для минимальной высоты строки
         self.client_frame.grid_rowconfigure(0, weight=1)
@@ -68,7 +68,6 @@ class ClientRegistrator:
     def go_to_feedback_page(self):
         self.client_frame.destroy()
         self.contract_frame.destroy()
-        print("try feedback")
         self.feedback_instance = Feedback(self.root)
 
 

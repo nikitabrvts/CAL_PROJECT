@@ -1,10 +1,12 @@
 import tkinter as tk
 from tkinter import Canvas, ttk
+from tkinter import messagebox
 from PyPDF2 import PdfMerger
 import psycopg2
 from psycopg2 import sql
 from reportlab.pdfgen import canvas
 from pdf_merger import PDFMerger
+
 
 
 from time_to_payback import PaybackCalculator
@@ -87,7 +89,7 @@ class ManagerPage:
         total_expens_data = sum(expens_data[0]) - contract_id 
         return total_expens_data
     def fetch_review_data(self, contract_id):
-        query = "SELECT * FROM review WHERE contract_id = %s;"
+        query = "SELECT * FROM review WHERE contract_id = %s ORDER BY review_id DESC LIMIT 1;"
         self.cursor.execute(query, ([contract_id]))
         review = self.cursor.fetchall()
         return review[0][2]
@@ -123,7 +125,8 @@ class ManagerPage:
         print(f"Формирование отзыва от клиента...")
         review = self.fetch_review_data(client)
         print (review)
-        self.write_variables_to_pdf("review.pdf", review, client )
+        self.write_variables_to_pdf("review.pdf", review.encode('utf-8'), client )
+        messagebox.showinfo("", f"{review}\n\n\n Копия отзыва сохранена на вашем компьютере!")
 
 
 
@@ -132,7 +135,7 @@ class ManagerPage:
     # Создаем PDF-документ
         pdf_canvas = canvas.Canvas(filename)
     # Записываем значения переменных в PDF
-        pdf_canvas.drawString(100, 800, f"I CAN SAY ABOUT COMPANY: {variable1}")
+        pdf_canvas.drawString(100, 800, f"I CAN SAY ABOUT COMPANY: {variable1.decode('ANSI')}")
         pdf_canvas.drawString(100, 780, f"REVIEW FROM CLIENT: {variable2}")
     # Закрываем PDF-документ
         pdf_canvas.save()

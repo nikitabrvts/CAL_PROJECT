@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 import sqlite3
+from tkinter import messagebox
 
 import psycopg2
 
@@ -14,7 +15,7 @@ class Feedback:
         self.feedback_frame = ttk.Frame(self.root, style="TFrame")
         self.feedback_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
-        ttk.Label(self.feedback_frame, text="Блок \"Обратная связь\"", style="TLabel").grid(row=0, column=0, columnspan=2, pady=5)
+        ttk.Label(self.feedback_frame, text="Обратная связь", style="TLabel").grid(row=0, column=0, columnspan=2, pady=5)
 
         ttk.Label(self.feedback_frame, text="Номер договора:", style="TLabel").grid(row=1, column=0, pady=5)
         self.entry_contract_number = ttk.Entry(self.feedback_frame, style="TEntry")
@@ -45,6 +46,7 @@ class Feedback:
         cursor.execute(query, (contract_number, review))
         connection.commit()        
         connection.close()
+        messagebox.showinfo("", "Отзыв записан!")
 
 if __name__ == "__main__":
     root = tk.Tk()

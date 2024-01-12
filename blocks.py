@@ -9,13 +9,14 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.lib import colors
 
 
 class Blocks:
     def __init__(self, root, result):
         self.root = root
         self.result = result
-        self.root.title("Блоки с данными")
+        self.root.title("Данные для расчетов")
         self.months =   0
 
         # Создаем стиль для виджетов ttk
@@ -28,45 +29,45 @@ class Blocks:
         self.investment_frame = ttk.Frame(root, borderwidth=2, relief="solid", width=200, height=100)
         self.investment_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
-        ttk.Label(self.investment_frame, text="Первоначальные инвестиции", style="TLabel").grid(row=0, column=0, pady=5)
+        ttk.Label(self.investment_frame, text="Инвестиции до открытия", style="TLabel").grid(row=0, column=0, pady=5)
 
-        ttk.Label(self.investment_frame, text="Аренда", style="TLabel").grid(row=1, column=0, pady=10,  sticky="w", padx=5)
+        ttk.Label(self.investment_frame, text="Аренда (Руб.):", style="TLabel").grid(row=1, column=0, pady=10,  sticky="w", padx=5)
         self.entry_initial_rent = ttk.Entry(self.investment_frame, style="TEntry")
         self.entry_initial_rent.grid(row=1, column=1, pady=5)
 
-        ttk.Label(self.investment_frame, text="Ремонт:", style="TLabel").grid(row=2, column=0, pady=10,  sticky="w", padx=5)
+        ttk.Label(self.investment_frame, text="Ремонт (Руб.):", style="TLabel").grid(row=2, column=0, pady=10,  sticky="w", padx=5)
         self.entry_repair = ttk.Entry(self.investment_frame, style="TEntry")
         self.entry_repair.grid(row=2, column=1, pady=5)
 
-        ttk.Label(self.investment_frame, text="Оборудование:", style="TLabel").grid(row=3, column=0, pady=10,  sticky="w", padx=5)
+        ttk.Label(self.investment_frame, text="Оборудование (Руб.):", style="TLabel").grid(row=3, column=0, pady=10,  sticky="w", padx=5)
         self.entry_equipment = ttk.Entry(self.investment_frame, style="TEntry")
         self.entry_equipment.grid(row=3, column=1, pady=5)
 
-        ttk.Label(self.investment_frame, text="Продукты:", style="TLabel").grid(row=4, column=0, pady=10,  sticky="w", padx=5)
+        ttk.Label(self.investment_frame, text="Продукты (Руб.):", style="TLabel").grid(row=4, column=0, pady=10,  sticky="w", padx=5)
         self.entry_products = ttk.Entry(self.investment_frame, style="TEntry")
         self.entry_products.grid(row=4, column=1, pady=5)
 
-        ttk.Label(self.investment_frame, text="Документы:", style="TLabel").grid(row=5, column=0, pady=10,  sticky="w", padx=5)
+        ttk.Label(self.investment_frame, text="Документооборот (Руб.):", style="TLabel").grid(row=5, column=0, pady=10,  sticky="w", padx=5)
         self.entry_documents = ttk.Entry(self.investment_frame, style="TEntry")
         self.entry_documents.grid(row=5, column=1, pady=5)
 
-        ttk.Label(self.investment_frame, text="ФОТ:", style="TLabel").grid(row=6, column=0, pady=10,  sticky="w", padx=5)
+        ttk.Label(self.investment_frame, text="ФОТ (Руб.):", style="TLabel").grid(row=6, column=0, pady=10,  sticky="w", padx=5)
         self.entry_fot = ttk.Entry(self.investment_frame, style="TEntry")
         self.entry_fot.grid(row=6, column=1, pady=5)
 
-        ttk.Label(self.investment_frame, text="Охрана:", style="TLabel").grid(row=7, column=0, pady=10,  sticky="w", padx=5)
+        ttk.Label(self.investment_frame, text="Охранные услуги (Руб.):", style="TLabel").grid(row=7, column=0, pady=10,  sticky="w", padx=5)
         self.entry_guard = ttk.Entry(self.investment_frame, style="TEntry")
         self.entry_guard.grid(row=7, column=1, pady=5)
 
-        ttk.Label(self.investment_frame, text="Маркетинг:", style="TLabel").grid(row=8, column=0, pady=10,  sticky="w", padx=5)
+        ttk.Label(self.investment_frame, text="Маркетинг (Руб.):", style="TLabel").grid(row=8, column=0, pady=10,  sticky="w", padx=5)
         self.entry_smm = ttk.Entry(self.investment_frame, style="TEntry")
         self.entry_smm.grid(row=8, column=1, pady=5)
 
-        ttk.Label(self.investment_frame, text="Коммунальные платежи:", style="TLabel").grid(row=9, column=0, pady=10,  sticky="w", padx=5)
+        ttk.Label(self.investment_frame, text="Коммунальные платежи (Руб.):", style="TLabel").grid(row=9, column=0, pady=10,  sticky="w", padx=5)
         self.entry_service = ttk.Entry(self.investment_frame, style="TEntry")
         self.entry_service.grid(row=9, column=1, pady=5)
 
-        ttk.Label(self.investment_frame, text="Налоги:", style="TLabel").grid(row=10, column=0, pady=10,  sticky="w", padx=5)
+        ttk.Label(self.investment_frame, text="Налоги (Руб.):", style="TLabel").grid(row=10, column=0, pady=10,  sticky="w", padx=5)
         self.entry_tax = ttk.Entry(self.investment_frame, style="TEntry")
         self.entry_tax.grid(row=10, column=1, pady=5)
 
@@ -86,7 +87,7 @@ class Blocks:
         self.income_frame = ttk.Frame(root, borderwidth=2, relief="solid", width=200, height=100)
         self.income_frame.grid(row=1, column=0, padx=10, pady=10)
 
-        ttk.Label(self.income_frame, text="Доходы", style="TLabel").grid(row=0, column=0, pady=5)
+        ttk.Label(self.income_frame, text="Доходы (Руб.):", style="TLabel").grid(row=0, column=0, pady=5)
 
         ttk.Label(self.income_frame, text="Количество посетителей (1 мес.):", style="TLabel").grid(row=1, column=0, pady=5)
         self.entry_visitors1 = ttk.Entry(self.income_frame, style="TEntry")
@@ -108,7 +109,7 @@ class Blocks:
         self.entry_visitors5 = ttk.Entry(self.income_frame, style="TEntry")
         self.entry_visitors5.grid(row=5, column=1, pady=5)
 
-        ttk.Label(self.income_frame, text="Средний чек:", style="TLabel").grid(row=6, column=0, pady=5,  sticky="w", padx=5)
+        ttk.Label(self.income_frame, text="Средний чек (Руб.):", style="TLabel").grid(row=6, column=0, pady=5,  sticky="w", padx=5)
         self.entry_average_check = ttk.Entry(self.income_frame, style="TEntry")
         self.entry_average_check.grid(row=6, column=1, pady=5)
 
@@ -127,33 +128,33 @@ class Blocks:
         self.expenses_frame = ttk.Frame(root, borderwidth=2, relief="solid", width=200, height=100)
         self.expenses_frame.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
 
-        ttk.Label(self.expenses_frame, text="Расходы", style="TLabel").grid(row=0, column=0, pady=5)
+        ttk.Label(self.expenses_frame, text="Ежемесячные Расходы (Руб.):", style="TLabel").grid(row=0, column=0, pady=5)
 
-        ttk.Label(self.expenses_frame, text="Аренда:", style="TLabel").grid(row=1, column=0, pady=10,  sticky="w", padx=5)
+        ttk.Label(self.expenses_frame, text="Аренда (Руб.):", style="TLabel").grid(row=1, column=0, pady=10,  sticky="w", padx=5)
         self.entry_month_rent = ttk.Entry(self.expenses_frame, style="TEntry")
         self.entry_month_rent.grid(row=1, column=1, pady=5)
 
-        ttk.Label(self.expenses_frame, text="Ремонт:", style="TLabel").grid(row=2, column=0, pady=10,  sticky="w", padx=5)
+        ttk.Label(self.expenses_frame, text="Ремонт (Руб.):", style="TLabel").grid(row=2, column=0, pady=10,  sticky="w", padx=5)
         self.entry_month_repair = ttk.Entry(self.expenses_frame, style="TEntry")
         self.entry_month_repair.grid(row=2, column=1, pady=5)
 
-        ttk.Label(self.expenses_frame, text="Продукты:", style="TLabel").grid(row=3, column=0, pady=10,  sticky="w", padx=5)
+        ttk.Label(self.expenses_frame, text="Продукты (Руб.):", style="TLabel").grid(row=3, column=0, pady=10,  sticky="w", padx=5)
         self.entry_month_products = ttk.Entry(self.expenses_frame, style="TEntry")
         self.entry_month_products.grid(row=3, column=1, pady=5)
 
-        ttk.Label(self.expenses_frame, text="ФОТ:", style="TLabel").grid(row=4, column=0, pady=10,  sticky="w", padx=5)
+        ttk.Label(self.expenses_frame, text="ФОТ (Руб.):", style="TLabel").grid(row=4, column=0, pady=10,  sticky="w", padx=5)
         self.entry_month_fot = ttk.Entry(self.expenses_frame, style="TEntry")
         self.entry_month_fot.grid(row=4, column=1, pady=5)
 
-        ttk.Label(self.expenses_frame, text="Охрана:", style="TLabel").grid(row=5, column=0, pady=10,  sticky="w", padx=5)
+        ttk.Label(self.expenses_frame, text="Охранные услуги (Руб.):", style="TLabel").grid(row=5, column=0, pady=10,  sticky="w", padx=5)
         self.entry_month_guard = ttk.Entry(self.expenses_frame, style="TEntry")
         self.entry_month_guard.grid(row=5, column=1, pady=5)
 
-        ttk.Label(self.expenses_frame, text="Маркетинг:", style="TLabel").grid(row=6, column=0, pady=10,  sticky="w", padx=5)
+        ttk.Label(self.expenses_frame, text="Маркетинг (Руб.):", style="TLabel").grid(row=6, column=0, pady=10,  sticky="w", padx=5)
         self.entry_month_smm = ttk.Entry(self.expenses_frame, style="TEntry")
         self.entry_month_smm.grid(row=6, column=1, pady=5)
 
-        ttk.Label(self.expenses_frame, text="Коммунальные платежи:", style="TLabel").grid(row=7, column=0, pady=5, sticky="w", padx=5)
+        ttk.Label(self.expenses_frame, text="Коммунальные платежи (Руб.):", style="TLabel").grid(row=7, column=0, pady=5, sticky="w", padx=5)
         self.entry_month_service = ttk.Entry(self.expenses_frame, style="TEntry")
         self.entry_month_service.grid(row=7, column=1, pady=5)
 
@@ -214,7 +215,8 @@ class Blocks:
         self.write_invested_to_database()
         self.payback_task()
         self.write_variables_to_pdf("1.pdf", self.ivest, self.months )
-        
+       # name = "RESULT_FOR_CONTRACT_%s.pdf" % self.result
+
         pdf_merger = PDFMerger("RESULT.pdf")
         pdf_merger.add_pdf("1.pdf")
         pdf_merger.add_pdf("payback_graph.pdf")
@@ -236,31 +238,40 @@ class Blocks:
         pdfmetrics.registerFont(TTFont('FreeSans', 'arial.ttf'))
         pdf_canvas.setFont('FreeSans', 12)
 
+        pdf_canvas.drawString(125, 760, f"Информация о договоре:")
+        
+        pdf_canvas.drawString(100, 740, f"Информация о клиенте: {self.final_frame.for_blocks[0][1]}, {self.final_frame.for_blocks[0][2]}, {self.final_frame.for_blocks[0][3]}, {self.final_frame.for_blocks[0][4]}")
+        pdf_canvas.drawString(100, 720, f"Номер договора: {self.final_frame.contract_id}")
+        pdf_canvas.drawString(100, 700, f"Идентификатор менеджера: {self.final_frame.cd[0][2]}")
 
-    # Записываем значения переменных в PDF
-        pdf_canvas.drawString(100, 820, f"Initial investments and detailing:")
+        pdf_canvas.drawString(125, 660, f"Первоначальные инвестиции и срок окупаемости:")
 
-        pdf_canvas.drawString(100, 800, f"Initial investment: {variable1}")
-        pdf_canvas.drawString(100, 780, f"Payback period: {variable2}")
-        pdf_canvas.drawString(100, 760, f"Initial rent: {self.initial_rent}")
-        pdf_canvas.drawString(100, 740, f"Renovation: {self.repair}")
-        pdf_canvas.drawString(100, 720, f"Equipment: {self.equipment}")
-        pdf_canvas.drawString(100, 700, f"Products: {self.products}")
-        pdf_canvas.drawString(100, 680, f"Documentation: {self.documents}")
-        pdf_canvas.drawString(100, 660, f"Salary: {self.fot}")
-        pdf_canvas.drawString(100, 640, f"Sequrity: {self.guard}")
-        pdf_canvas.drawString(100, 620, f"Social Media Marketing: {self.smm}")
-        pdf_canvas.drawString(100, 600, f"Service: {self.service}")
-        pdf_canvas.drawString(100, 580, f"Taxes: {self.tax}")
+        pdf_canvas.setFillColor(colors.red)
 
-        pdf_canvas.drawString(100, 540, f"Visitor and average check:")
+        pdf_canvas.drawString(100, 620, f"Сумма первоначальных инвестиций: {variable1}")
+        pdf_canvas.drawString(100, 640, f"Срок окупаемости (мес.): {variable2}")
 
-        pdf_canvas.drawString(100, 520, f"Average check: {self.num_av_check}")
-        pdf_canvas.drawString(100, 500, f"Average visitors: {self.average}")
+        pdf_canvas.setFillColor(colors.black)
 
-        pdf_canvas.drawString(100, 460, f"Monthly expenses:")
+        pdf_canvas.drawString(100, 600, f"Первоначалные инвестиции: {self.initial_rent}")
+        pdf_canvas.drawString(100, 580, f"Ремонт: {self.repair}")
+        pdf_canvas.drawString(100, 560, f"Оборудование: {self.equipment}")
+        pdf_canvas.drawString(100, 540, f"Продукты: {self.products}")
+        pdf_canvas.drawString(100, 520, f"Документооборот: {self.documents}")
+        pdf_canvas.drawString(100, 500, f"ФОТ: {self.fot}")
+        pdf_canvas.drawString(100, 480, f"Услуги охранной организации: {self.guard}")
+        pdf_canvas.drawString(100, 460, f"Маркетинг: {self.smm}")
+        pdf_canvas.drawString(100, 440, f"Коммунальные платежы: {self.service}")
+        pdf_canvas.drawString(100, 420, f"Налоги: {self.tax}")
 
-        pdf_canvas.drawString(100, 440, f"Average monthly expenses: {self.expenses}")
+        pdf_canvas.drawString(125, 380, f"Гости и средний чек:")
+
+        pdf_canvas.drawString(100, 360, f"Средний чек: {self.num_av_check}")
+        pdf_canvas.drawString(100, 340, f"Предполагаемое количество гостей: {self.average}")
+
+        pdf_canvas.drawString(125, 300, f"Ежемесячные расходы:")
+
+        pdf_canvas.drawString(100, 280, f"Предполагаемые расходы в месяц: {self.expenses}")
 
         self.final_frame = FinalBlock(self.root,
                               self.result,
@@ -268,11 +279,6 @@ class Blocks:
                               self.result_list,
                               self.expenses)
         
-        pdf_canvas.drawString(100, 400, f"About this contract:")
-        
-        pdf_canvas.drawString(100, 380, f"Client data: {self.final_frame.for_blocks[0][1]}, {self.final_frame.for_blocks[0][2]}, {self.final_frame.for_blocks[0][3]}, {self.final_frame.for_blocks[0][4]}")
-        pdf_canvas.drawString(100, 360, f"Contract number: {self.final_frame.contract_id}")
-        pdf_canvas.drawString(100, 340, f"Manager ID: {self.final_frame.cd[0][2]}")
 
 
 

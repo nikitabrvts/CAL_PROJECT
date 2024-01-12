@@ -16,11 +16,6 @@ class MyApp:
         # Создаем экземпляр класса AuthForm для формы авторизации
         self.auth_form = AuthForm(self.root)
         # Подключаем метод обработки успешной авторизации
-#        self.auth_form.set_login_success_callback(self.show_blocks)
-
-#    def show_blocks(self):
-        # Создаем экземпляр класса Blocks только после успешной авторизации
-#        self.blocks = Blocks(self.root)
 
 if __name__ == "__main__":
     root = tk.Tk()

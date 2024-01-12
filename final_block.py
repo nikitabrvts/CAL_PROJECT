@@ -41,8 +41,8 @@ class FinalBlock:
         ttk.Label(self.final_frame, text="Данные клиента:").grid(row=1, column=0, pady=5, sticky="w", padx=5)
         self.client_data_label = ttk.Label(self.final_frame, text=client_data[0][1] + " " 
                                            + client_data[0][2] + " " 
-                                           + client_data[0][3] + " "
-                                           + client_data[0][4] + " "
+                                           + client_data[0][3] + " " + "\n" 
+                                           + client_data[0][4] + " " + "\n"
                                            + client_data[0][5]  )
         self.client_data_label.grid(row=1, column=1, pady=5, sticky="w", padx=5)
 
