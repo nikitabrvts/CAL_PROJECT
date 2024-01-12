@@ -56,13 +56,13 @@ class FinalBlock:
 
         ttk.Label(self.final_frame, text="Первоначальные инвестиции: ").grid(row=4, column=0, pady=5, sticky="w", padx=5)
 
-        self.input_params_label = ttk.Label(self.final_frame, text="Аренда: " + str(expens_data[0][1]) + "\n" +
-                                                            " Ремонт: " + str(expens_data[0][2]) + "\n" +
-                                                            " Оборудование: " + str(expens_data[0][3]) + "\n" +
-                                                            " Продукты: " + str(expens_data[0][4]) + "\n" +
-                                                            " Документы: " + str(expens_data[0][5]) + "\n" +
-                                                            " ФОТ: " + str(expens_data[0][6]) + "\n" +
-                                                            " Охрана: " + str(expens_data[0][7]) + "\n" +
+        self.input_params_label = ttk.Label(self.final_frame, text="Аренда: " + str(invest_data[0][1]) + "\n" +
+                                                            " Ремонт: " + str(invest_data[0][2]) + "\n" +
+                                                            " Оборудование: " + str(invest_data[0][3]) + "\n" +
+                                                            " Продукты: " + str(invest_data[0][4]) + "\n" +
+                                                            " Документы: " + str(invest_data[0][5]) + "\n" +
+                                                            " ФОТ: " + str(invest_data[0][6]) + "\n" +
+                                                            " Охрана: " + str(invest_data[0][7]) + "\n" +
                                                             " Маркетинг: " + str(invest_data[0][8]) + "\n" +
                                                             " Коммунальные платежи: " + str(invest_data[0][9]) + "\n" +
                                                             " Налоги: " + str(invest_data[0][10]) + "\n").grid(row=4, column=1, pady=5, sticky="w", padx=5)
@@ -79,13 +79,13 @@ class FinalBlock:
         
         ttk.Label(self.final_frame, text="Ежемесячные расходы:").grid(row=6, column=0, pady=5, sticky="w", padx=5)
 
-        self.input_params_label = ttk.Label(self.final_frame, text="Аренда: " + str(invest_data[0][1]) + "\n" +
-                                                            " Ремонт: " + str(invest_data[0][2]) + "\n" +
-                                                            " Продукты: " + str(invest_data[0][3]) + "\n" +
-                                                            " ФОТ: " + str(invest_data[0][4]) + "\n" +
-                                                            " Охрана: " + str(expens_data[0][5]) + "\n" +
-                                                            " Маркетинг: " + str(expens_data[0][6]) + "\n" +
-                                                            " Коммунальные платежи: " + str(expens_data[0][7])
+        self.input_params_label = ttk.Label(self.final_frame, text="Аренда: " + str(expens_data[0][2]) + "\n" +
+                                                            " Ремонт: " + str(expens_data[0][3]) + "\n" +
+                                                            " Продукты: " + str(expens_data[0][4]) + "\n" +
+                                                            " ФОТ: " + str(expens_data[0][5]) + "\n" +
+                                                            " Охрана: " + str(expens_data[0][6]) + "\n" +
+                                                            " Маркетинг: " + str(expens_data[0][7]) + "\n" +
+                                                            " Коммунальные платежи: " + str(expens_data[0][8])
                                                             ).grid(row=6, column=1, pady=5, sticky="w", padx=5)
 
 

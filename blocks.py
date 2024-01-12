@@ -6,6 +6,10 @@ from time_to_payback import PaybackCalculator
 from visitors_generator import VisitorsGenerator
 from final_block import FinalBlock
 from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+
 
 class Blocks:
     def __init__(self, root, result):
@@ -162,7 +166,7 @@ class Blocks:
         root.grid_rowconfigure(3, weight=1)
 
         # Кнопка "Рассчитать"
-        self.calculate_button = ttk.Button(root, text="вызов калькулятора", command=self.perform_calculations)
+        self.calculate_button = ttk.Button(root, text="Рассчет", command=self.perform_calculations)
         self.calculate_button.grid(row=1, column=4, pady=10)
         
         # Опция для минимальной высоты строки
@@ -179,7 +183,6 @@ class Blocks:
         self.smm = int(self.entry_smm.get())
         self.service = int(self.entry_service.get())
         self.tax = int(self.entry_tax.get())
-
         entry_v1 = self.entry_visitors1.get()
         entry_v2 = self.entry_visitors2.get()
         entry_v3 = self.entry_visitors3.get()
@@ -193,7 +196,7 @@ class Blocks:
         sum_of_list = 0
         for i in range(len(visitors_list)):
             sum_of_list += int(visitors_list[i])
-        self.average = sum_of_list/len(visitors_list)
+        self.average = int(sum_of_list/len(visitors_list))
         self.result_list = [int(x) * self.num_av_check for x in visitors_list]
 
         entry_month_rent = self.entry_month_rent.get()
@@ -224,7 +227,16 @@ class Blocks:
 
     def write_variables_to_pdf(self, filename, variable1, variable2):
     # Создаем PDF-документ
-        pdf_canvas = canvas.Canvas(filename)
+        font_path = 'Arial.ttf'
+    
+    # Создаем PDF-документ с указанием шрифта
+        pdf_canvas = canvas.Canvas(filename, pagesize=letter)
+        #pdf_canvas.setFont("Arial", 12) 
+
+        pdfmetrics.registerFont(TTFont('FreeSans', 'arial.ttf'))
+        pdf_canvas.setFont('FreeSans', 12)
+
+
     # Записываем значения переменных в PDF
         pdf_canvas.drawString(100, 820, f"Initial investments and detailing:")
 
@@ -241,7 +253,7 @@ class Blocks:
         pdf_canvas.drawString(100, 600, f"Service: {self.service}")
         pdf_canvas.drawString(100, 580, f"Taxes: {self.tax}")
 
-        pdf_canvas.drawString(100, 540, f"Visitor and average check: {self.tax}")
+        pdf_canvas.drawString(100, 540, f"Visitor and average check:")
 
         pdf_canvas.drawString(100, 520, f"Average check: {self.num_av_check}")
         pdf_canvas.drawString(100, 500, f"Average visitors: {self.average}")
@@ -256,10 +268,11 @@ class Blocks:
                               self.result_list,
                               self.expenses)
         
+        pdf_canvas.drawString(100, 400, f"About this contract:")
         
-        pdf_canvas.drawString(100, 400, f"Client data: {self.final_frame.for_blocks[0][1]}, {self.final_frame.for_blocks[0][2]}, {self.final_frame.for_blocks[0][3]}, {self.final_frame.for_blocks[0][4]}")
-        pdf_canvas.drawString(100, 380, f"Contract number: {self.final_frame.contract_id}")
-        pdf_canvas.drawString(100, 360, f"Manager ID: {self.final_frame.cd[0][2]}")
+        pdf_canvas.drawString(100, 380, f"Client data: {self.final_frame.for_blocks[0][1]}, {self.final_frame.for_blocks[0][2]}, {self.final_frame.for_blocks[0][3]}, {self.final_frame.for_blocks[0][4]}")
+        pdf_canvas.drawString(100, 360, f"Contract number: {self.final_frame.contract_id}")
+        pdf_canvas.drawString(100, 340, f"Manager ID: {self.final_frame.cd[0][2]}")
 
 
 
@@ -284,7 +297,7 @@ class Blocks:
 
         self.ivest = initial_rent + repair + equipment + products + documents + fot + guard + smm + service + tax
 
-        #print("invest ", ivest)
+        print(int(self.ivest))
 
         ######
     
