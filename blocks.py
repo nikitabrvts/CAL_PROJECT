@@ -272,6 +272,8 @@ class Blocks:
         pdf_canvas.drawString(125, 300, f"Ежемесячные расходы:")
 
         pdf_canvas.drawString(100, 280, f"Предполагаемые расходы в месяц: {self.expenses}")
+        
+        pdf_canvas.save()
 
         self.final_frame = FinalBlock(self.root,
                               self.result,
@@ -280,14 +282,6 @@ class Blocks:
                               self.expenses)
         
 
-
-
-
-
-
-
-    # Закрываем PDF-документ
-        pdf_canvas.save()
     def payback_task(self):
         
         initial_rent = int(self.entry_initial_rent.get())

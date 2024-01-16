@@ -84,7 +84,6 @@ class PaybackCalculator:
 
 
     def profitability(self):
-        
         i = 0
         print(self.ib)
         var = int(self.total_income[i])-self.ib

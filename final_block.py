@@ -101,7 +101,6 @@ class FinalBlock:
 
     def fetch_contract_data(self, contract_id):
         query = "SELECT * FROM contract WHERE contract_id = %s;"
-
         self.cursor.execute(query, (contract_id,))
         contract_data = self.cursor.fetchall()
         return contract_data
@@ -117,6 +116,7 @@ class FinalBlock:
         self.cursor.execute(query, ([contract_id]))
         invest_data = self.cursor.fetchall()
         return invest_data
+    
     def fetch_income_data(self, contract_id):
         query = "SELECT * FROM income WHERE contract_id = %s;"
         self.cursor.execute(query, ([contract_id]))
@@ -128,6 +128,8 @@ class FinalBlock:
         self.cursor.execute(query, ([contract_id]))
         expens_data = self.cursor.fetchall()
         return expens_data
+
+
 
     def close_connection(self):
         # Закрытие соединения с базой данных

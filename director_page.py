@@ -6,6 +6,12 @@ import psycopg2
 from psycopg2 import sql
 from reportlab.pdfgen import canvas
 from pdf_merger import PDFMerger
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.lib import colors
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfbase import pdfmetrics
 
 
 
@@ -42,9 +48,7 @@ class ManagerPage:
             # Кнопка "Сформировать отчет" для каждого клиента
             ttk.Button(self.clients_frame, text="Посмотреть отзыв", command=lambda c=client: self.show_review(c['contract_id'])).grid(row=i, column=7, pady=5)
 
-        # Опция для минимальной высоты строки
         self.clients_frame.grid_rowconfigure(0, weight=1)
-
     
     def fetch_clients_data(self):
         # Подключение к базе данных PostgreSQL (замените параметры подключения своими)
@@ -55,7 +59,6 @@ class ManagerPage:
         password="123"
         )
         self.cursor = self.connection.cursor()   
-
         self.cursor.execute("SELECT name, surname, phone_number, email, contract_id FROM client JOIN contract ON client.client_id=contract.client_id")
         clients_data = [{'first_name': row[0], 'last_name': row[1], 'phone_number': row[2], 'email': row[3],  'contract_id': row[4]} for row in self.cursor.fetchall()]
         return clients_data
@@ -66,12 +69,29 @@ class ManagerPage:
         contract_data = self.cursor.fetchall()
         return contract_data
     
+    def fetch_fio_data(self, contract_id):
+        query = "SELECT * FROM contract WHERE contract_id = %s;"
+        self.cursor.execute(query, (contract_id,))
+        contract_data = self.cursor.fetchall()
+
+        query = "SELECT * FROM client WHERE client_id = %s;"
+        self.cursor.execute(query, (contract_data[0][1],))
+        fio_data = self.cursor.fetchall()
+        return fio_data
+
     def fetch_invested_data(self, contract_id):
         query = "SELECT * FROM invested WHERE contract_id = %s;"
         self.cursor.execute(query, ([contract_id]))
         invest_data = self.cursor.fetchall()
         total_invest = sum(invest_data[0]) - contract_id
         return total_invest
+    
+    def fetch_all_invested_data(self, contract_id):
+        query = "SELECT * FROM invested WHERE contract_id = %s;"
+        self.cursor.execute(query, ([contract_id]))
+        invest_data = self.cursor.fetchall()
+        return invest_data  
+      
     def fetch_income_data(self, contract_id):
         query = "SELECT * FROM income WHERE contract_id = %s;"
         self.cursor.execute(query, ([contract_id]))
@@ -79,9 +99,9 @@ class ManagerPage:
         input_numbers = [income_data[0][2], income_data[1][2], income_data[2][2], income_data[3][2], income_data[4][2]]
         generator = VisitorsGenerator()
         visitors_list = generator.generate_visitors(input_numbers)
-        print(len(visitors_list))
         result_list = [x * income_data[0][3] for x in visitors_list]
         return result_list
+    
     def fetch_expens_data(self, contract_id):
         query = "SELECT * FROM expenses WHERE contract_id = %s;"
         self.cursor.execute(query, ([contract_id]))
@@ -93,24 +113,99 @@ class ManagerPage:
         self.cursor.execute(query, ([contract_id]))
         review = self.cursor.fetchall()
         return review[0][2]
+    def fetch_check_data(self, contract_id):
+        query = "SELECT * FROM income WHERE contract_id = %s;"
+        self.cursor.execute(query, ([contract_id]))
+        income_data = self.cursor.fetchall()
+        return income_data
     
+    def fetch_income_data_av(self, contract_id):
+        query = "SELECT * FROM income WHERE contract_id = %s;"
+        self.cursor.execute(query, ([contract_id]))
+        income_data = self.cursor.fetchall()
+        input_numbers = [income_data[0][2], income_data[1][2], income_data[2][2], income_data[3][2], income_data[4][2]]
+        generator = VisitorsGenerator()
+        visitors_list = generator.generate_visitors(input_numbers)
+        sum_of_list = 0
+        for i in range(len(visitors_list)):
+            sum_of_list += int(visitors_list[i])
+        average = int(sum_of_list/len(visitors_list))
+        return average
     
-
     def generate_report(self, client):
         # Метод для формирования отчета для выбранного клиента (ваш код здесь)
         print(f"Формирование отчета для клиента...", client)
+
         payback = PaybackCalculator(
             int(app.fetch_invested_data(client)),
             app.fetch_income_data(client),
             int(app.fetch_expens_data(client))
                 )
+        payback1 = PaybackCalculator(
+            int(app.fetch_invested_data(client)),
+            app.fetch_income_data(client),
+            int(app.fetch_expens_data(client))
+                )
+        self.month = payback1.calculate_payback_time()
+        self.invested_data = app.fetch_all_invested_data(client)
+        self.about_inv_data = app.fetch_invested_data(client)
+        self.income_data = app.fetch_income_data(client)
+        self.expense_data = app.fetch_expens_data(client)
+        self.contract = app.fetch_contract_data(client)
+        self.fio = app.fetch_fio_data(client)
+        self.check = app.fetch_check_data(client)
+        self.av = app.fetch_income_data_av(client)
+    # Создаем PDF-документ
+        font_path = 'Arial.ttf'
+    
+    # Создаем PDF-документ с указанием шрифта
+        pdf_canvas = canvas.Canvas("repo.pdf", pagesize=letter)
+
+        pdfmetrics.registerFont(TTFont('FreeSans', 'arial.ttf'))
+        pdf_canvas.setFont('FreeSans', 12)
+
+        pdf_canvas.drawString(125, 760, f"Информация о договоре:")
+        
+        pdf_canvas.drawString(100, 740, f"Информация о клиенте:{self.fio[0][1]}, {self.fio[0][2]}, {self.fio[0][3]}, {self.fio[0][4]}  ")
+        pdf_canvas.drawString(100, 720, f"Номер договора: {self.contract[0][0]}")
+        pdf_canvas.drawString(100, 700, f"Идентификатор менеджера: {self.contract[0][2]}")
+
+        pdf_canvas.drawString(125, 660, f"Первоначальные инвестиции и срок окупаемости:")
+
+        pdf_canvas.setFillColor(colors.red)
+
+        pdf_canvas.drawString(100, 620, f"Сумма первоначальных инвестиций: {self.about_inv_data}")
+        pdf_canvas.drawString(100, 640, f"Срок окупаемости (мес.): {self.month}")
+
+        pdf_canvas.setFillColor(colors.black)
+
+        pdf_canvas.drawString(100, 600, f"Первоначалные инвестиции: {self.invested_data[0][1]}")
+        pdf_canvas.drawString(100, 580, f"Ремонт: {self.invested_data[0][2]}")
+        pdf_canvas.drawString(100, 560, f"Оборудование: {self.invested_data[0][3]}")
+        pdf_canvas.drawString(100, 540, f"Продукты: {self.invested_data[0][4]}")
+        pdf_canvas.drawString(100, 520, f"Документооборот: {self.invested_data[0][5]}")
+        pdf_canvas.drawString(100, 500, f"ФОТ: {self.invested_data[0][6]}")
+        pdf_canvas.drawString(100, 480, f"Услуги охранной организации: {self.invested_data[0][7]}")
+        pdf_canvas.drawString(100, 460, f"Маркетинг: {self.invested_data[0][8]}")
+        pdf_canvas.drawString(100, 440, f"Коммунальные платежы: {self.invested_data[0][9]}")
+        pdf_canvas.drawString(100, 420, f"Налоги: {self.invested_data[0][10]}")
+
+        pdf_canvas.drawString(125, 380, f"Гости и средний чек:")
+
+        pdf_canvas.drawString(100, 360, f"Средний чек: {self.check[0][3]}")
+        pdf_canvas.drawString(100, 340, f"Предполагаемое количество гостей: {self.av}")
+
+        pdf_canvas.drawString(125, 300, f"Ежемесячные расходы:")
+
+        pdf_canvas.drawString(100, 280, f"Предполагаемые расходы в месяц: {self.expense_data}")
+
+        pdf_canvas.save()            
+
         payback.plot_payback_graph()
         payback.plot_profit_graph()
 
-        self.write_variables_to_pdf("1.pdf", payback.initial_budget, payback.payback_time_months )
-
         pdf_merger = PdfMerger()# Добавляем PDF-файлы
-        pdf_merger.append('1.pdf')
+        pdf_merger.append('repo.pdf')
         pdf_merger.append('payback_graph.pdf')
         pdf_merger.append('profit_graph.pdf')
 
@@ -119,50 +214,23 @@ class ManagerPage:
         with open(result_filename, 'wb') as output_pdf:
             pdf_merger.write(output_pdf)
 
-
     def show_review(self, client):
         # Метод для формирования отчета для выбранного клиента (ваш код здесь)
         print(f"Формирование отзыва от клиента...")
         review = self.fetch_review_data(client)
         print (review)
-        self.write_variables_to_pdf("review.pdf", review.encode('utf-8'), client )
+        self.write_variables_to_txt("review.doc", review, client )
         messagebox.showinfo("", f"{review}\n\n\n Копия отзыва сохранена на вашем компьютере!")
 
-
-
-
-    def write_variables_to_pdf(self, filename, variable1, variable2):
-    # Создаем PDF-документ
-        pdf_canvas = canvas.Canvas(filename)
-    # Записываем значения переменных в PDF
-        pdf_canvas.drawString(100, 800, f"I CAN SAY ABOUT COMPANY: {variable1.decode('ANSI')}")
-        pdf_canvas.drawString(100, 780, f"REVIEW FROM CLIENT: {variable2}")
-    # Закрываем PDF-документ
-        pdf_canvas.save()
-
+    def write_variables_to_txt(self, filename, variable1, variable2):
+    # Открываем файл для записи
+        with open(filename, 'w', encoding='utf-8') as txt_file:
+        # Записываем значения переменных в файл
+            txt_file.write(f"Отзыв от клиента с договором №: {variable2}\n")
+            txt_file.write(f"Что я могу сказать о проделанной работе: {variable1}\n")
+            
 
 if __name__ == "__main__":
     root = tk.Tk()
     app = ManagerPage(root)
-#    print("help")
-#    print(app.fetch_invested_data(26))
-#    print(app.fetch_expens_data(26))
-#    print(app.fetch_income_data(26))
-#    payback = PaybackCalculator(app.fetch_invested_data(26), app.fetch_income_data(26), app.fetch_expens_data(26))
-#    print(payback.calculate_payback_time())
-#
-#    payback1 = PaybackCalculator(
-#        int(app.fetch_invested_data(26)),
-#        app.fetch_income_data(26),
-#        int(app.fetch_expens_data(26))
-#        )
-#    payback1.plot_payback_graph()
-#    payback1.plot_profit_graph()
-
-
-
-
-
-
-
     root.mainloop()
