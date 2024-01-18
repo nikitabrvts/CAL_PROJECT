@@ -89,7 +89,7 @@ class FinalBlock:
 
 
         ttk.Label(self.final_frame, text="Результаты расчета:").grid(row=7, column=0, pady=5, sticky="w", padx=5)
-        self.calculation_results_label = ttk.Label(self.final_frame, text="Первоначальные инвестиции: " + str(initial_budget*1.15) + "\n" +
+        self.calculation_results_label = ttk.Label(self.final_frame, text="Первоначальные инвестиции: " + str(int(initial_budget*1.15)) + "\n" +
                                                                           "Срок окупаемости: " + str(payback_month - 2) 
                                                                                                             )
         self.calculation_results_label.grid(row=7, column=1, pady=5, sticky="w", padx=5)
