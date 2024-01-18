@@ -285,7 +285,7 @@ class Blocks:
         pdf_canvas.drawString(125, 140, f"Первоначальные инвестиции и срок окупаемости:")
 
         pdf_canvas.drawString(100, 120, f"Сумма первоначальных инвестиций: {variable1}")
-        pdf_canvas.drawString(100, 100, f"Срок окупаемости (мес.): {variable2}")
+        pdf_canvas.drawString(100, 100, f"Срок окупаемости (мес.): {variable2-2}")
         
         pdf_canvas.save()
 

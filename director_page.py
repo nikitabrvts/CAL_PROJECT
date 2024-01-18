@@ -220,7 +220,7 @@ class ManagerPage:
         pdf_canvas.drawString(125, 140, f"Первоначальные инвестиции и срок окупаемости:")
 
         pdf_canvas.drawString(100, 120, f"Сумма первоначальных инвестиций: {self.about_inv_data}")
-        pdf_canvas.drawString(100, 100, f"Срок окупаемости (мес.): {self.month}")
+        pdf_canvas.drawString(100, 100, f"Срок окупаемости (мес.): {self.month - 2}")
 
 
 
