@@ -202,25 +202,24 @@ class ManagerPage:
 
         pdf_canvas.drawString(125, 420, f"Гости и средний чек:")
 
-        pdf_canvas.drawString(100, 400, f"Среднемесячный предполагаемый доход: {int(self.check[0][3]) * int(self.av)}")
-        pdf_canvas.drawString(100, 380, f"Среднее предполагаемое количество гостей: {self.av}")
-        pdf_canvas.drawString(100, 360, f"Средний чек: {int(self.check[0][3])}")
+        pdf_canvas.drawString(100, 400, f"Среднее предполагаемое количество гостей: {int(self.check[4][2])}")
+        pdf_canvas.drawString(100, 380, f"Средний чек: {int(self.check[0][3])}")
 
-        pdf_canvas.drawString(125, 320, f"Ежемесячные расходы:")
+        pdf_canvas.drawString(125, 340, f"Ежемесячные расходы:")
 
-        pdf_canvas.drawString(100, 300, f"Ежемесячная аренда: {self.e[0][2]}")
-        pdf_canvas.drawString(100, 280, f"Ремонт: {self.e[0][3]}")
-        pdf_canvas.drawString(100, 260, f"Продукты: {self.e[0][4]}")
-        pdf_canvas.drawString(100, 240, f"Зароботная плата: {self.e[0][5]}")
-        pdf_canvas.drawString(100, 220, f"Услуги охранной организации: {self.e[0][6]}")
-        pdf_canvas.drawString(100, 200, f"Маркетинг: {self.e[0][7]}")
-        pdf_canvas.drawString(100, 180, f"Коммунальные платежи: {self.e[0][8]}")
+        pdf_canvas.drawString(100, 320, f"Ежемесячная аренда: {self.e[0][2]}")
+        pdf_canvas.drawString(100, 300, f"Ремонт: {self.e[0][3]}")
+        pdf_canvas.drawString(100, 280, f"Продукты: {self.e[0][4]}")
+        pdf_canvas.drawString(100, 260, f"Зароботная плата: {self.e[0][5]}")
+        pdf_canvas.drawString(100, 240, f"Услуги охранной организации: {self.e[0][6]}")
+        pdf_canvas.drawString(100, 220, f"Маркетинг: {self.e[0][7]}")
+        pdf_canvas.drawString(100, 200, f"Коммунальные платежи: {self.e[0][8]}")
 
 
-        pdf_canvas.drawString(125, 140, f"Первоначальные инвестиции и срок окупаемости:")
+        pdf_canvas.drawString(125, 160, f"Первоначальные инвестиции и срок окупаемости:")
 
-        pdf_canvas.drawString(100, 120, f"Сумма первоначальных инвестиций: {self.about_inv_data}")
-        pdf_canvas.drawString(100, 100, f"Срок окупаемости (мес.): {self.month - 2}")
+        pdf_canvas.drawString(100, 140, f"Сумма первоначальных инвестиций: {self.about_inv_data}")
+        pdf_canvas.drawString(100, 120, f"Срок окупаемости (мес.): {self.month - 2}")
 
 
 

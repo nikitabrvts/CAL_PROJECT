@@ -198,7 +198,7 @@ class Blocks:
         sum_of_list = 0
         for i in range(len(visitors_list)):
             sum_of_list += int(visitors_list[i])
-        self.average = int(sum_of_list/len(visitors_list))
+        self.average = entry_v5
         self.result_list = [int(x) * self.num_av_check for x in visitors_list]
 
         entry_month_rent = self.entry_month_rent.get()
@@ -268,24 +268,23 @@ class Blocks:
 
         pdf_canvas.drawString(125, 420, f"Гости и средний чек:")
 
-        pdf_canvas.drawString(100, 400, f"Среднемесячный предполагаемый доход: {self.num_av_check*self.average}")
-        pdf_canvas.drawString(100, 380, f"Среднее предполагаемое количество гостей: {self.average}")
-        pdf_canvas.drawString(100, 360, f"Средний чек: {self.num_av_check}")
+        pdf_canvas.drawString(100, 400, f"Среднее предполагаемое количество гостей: {self.average}")
+        pdf_canvas.drawString(100, 380, f"Средний чек: {self.num_av_check}")
 
-        pdf_canvas.drawString(125, 320, f"Ежемесячные расходы:")
+        pdf_canvas.drawString(125, 340, f"Ежемесячные расходы:")
 
-        pdf_canvas.drawString(100, 300, f"Ежемесячная аренда: {self.pdf_rent}")
-        pdf_canvas.drawString(100, 280, f"Ремонт: {self.pdf_repair}")
-        pdf_canvas.drawString(100, 260, f"Продукты: {self.pdf_products}")
-        pdf_canvas.drawString(100, 240, f"Зароботная плата: {self.pdf_fot}")
-        pdf_canvas.drawString(100, 220, f"Услуги охранной организации: {self.pdf_guard}")
-        pdf_canvas.drawString(100, 200, f"Маркетинг: {self.pdf_smm}")
-        pdf_canvas.drawString(100, 180, f"Коммунальные платежи: {self.pdf_service}")
+        pdf_canvas.drawString(100, 320, f"Ежемесячная аренда: {self.pdf_rent}")
+        pdf_canvas.drawString(100, 300, f"Ремонт: {self.pdf_repair}")
+        pdf_canvas.drawString(100, 280, f"Продукты: {self.pdf_products}")
+        pdf_canvas.drawString(100, 260, f"Зароботная плата: {self.pdf_fot}")
+        pdf_canvas.drawString(100, 240, f"Услуги охранной организации: {self.pdf_guard}")
+        pdf_canvas.drawString(100, 220, f"Маркетинг: {self.pdf_smm}")
+        pdf_canvas.drawString(100, 200, f"Коммунальные платежи: {self.pdf_service}")
 
-        pdf_canvas.drawString(125, 140, f"Первоначальные инвестиции и срок окупаемости:")
+        pdf_canvas.drawString(125, 160, f"Первоначальные инвестиции и срок окупаемости:")
 
-        pdf_canvas.drawString(100, 120, f"Сумма первоначальных инвестиций: {variable1}")
-        pdf_canvas.drawString(100, 100, f"Срок окупаемости (мес.): {variable2-2}")
+        pdf_canvas.drawString(100, 140, f"Сумма первоначальных инвестиций: {variable1}")
+        pdf_canvas.drawString(100, 120, f"Срок окупаемости (мес.): {variable2 - 2}")
         
         pdf_canvas.save()
 

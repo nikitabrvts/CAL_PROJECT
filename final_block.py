@@ -54,9 +54,9 @@ class FinalBlock:
         self.manager_id_label = ttk.Label(self.final_frame, text=contract_data[0][2])
         self.manager_id_label.grid(row=3, column=1, pady=5, sticky="w", padx=5)
 
-        ttk.Label(self.final_frame, text="Первоначальные инвестиции: ").grid(row=4, column=0, pady=5, sticky="w", padx=5)
+        ttk.Label(self.final_frame, text="Расходы до открытия: ").grid(row=4, column=0, pady=5, sticky="w", padx=5)
 
-        self.input_params_label = ttk.Label(self.final_frame, text="Аренда: " + str(invest_data[0][1]) + "\n" +
+        self.input_params_label = ttk.Label(self.final_frame, text=" Аренда: " + str(invest_data[0][1]) + "\n" +
                                                             " Ремонт: " + str(invest_data[0][2]) + "\n" +
                                                             " Оборудование: " + str(invest_data[0][3]) + "\n" +
                                                             " Продукты: " + str(invest_data[0][4]) + "\n" +
@@ -70,8 +70,8 @@ class FinalBlock:
 
         ttk.Label(self.final_frame, text="Гости и средний чек:").grid(row=5, column=0, pady=5, sticky="w", padx=5)
 
-        self.input_params_label = ttk.Label(self.final_frame, text="Среднемесячный предполагаемый доход: " + str(int(income_data[0][3]) * self.av) + "\n" +
-                                                            "Среднее предполагаемое количество гостей: " + str(self.av) + "\n" +
+        self.input_params_label = ttk.Label(self.final_frame, text=
+                                                            "Среднее предполагаемое количество гостей: " + str(income_data[4][2]) + "\n" +
                                                             "Средний чек: " + str((income_data[0][3]))
                                                             ).grid(row=5, column=1, pady=5, sticky="w", padx=5)
         
@@ -89,7 +89,7 @@ class FinalBlock:
 
 
         ttk.Label(self.final_frame, text="Результаты расчета:").grid(row=7, column=0, pady=5, sticky="w", padx=5)
-        self.calculation_results_label = ttk.Label(self.final_frame, text="Изначальные инвестиции: " + str(initial_budget)*1.15 + "\n" +
+        self.calculation_results_label = ttk.Label(self.final_frame, text="Первоначальные инвестиции: " + str(initial_budget*1.15) + "\n" +
                                                                           "Срок окупаемости: " + str(payback_month - 2) 
                                                                                                             )
         self.calculation_results_label.grid(row=7, column=1, pady=5, sticky="w", padx=5)
