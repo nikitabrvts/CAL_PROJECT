@@ -4,6 +4,7 @@ from tkinter import ttk
 import psycopg2
 
 from time_to_payback import PaybackCalculator
+from visitors_generator import VisitorsGenerator
 
 class FinalBlock:
     def __init__(self, root, contract_id, initial_budget, total_income, monthly_expenses):
@@ -18,7 +19,7 @@ class FinalBlock:
         )
         self.cursor = self.connection.cursor()    
         self.contract_id = contract_id
-        self.initial_budget = initial_budget
+        self.initial_budget = initial_budget*1.15
         self.total_income = total_income
         self.monthly_expenses = monthly_expenses
         contract_data = self.fetch_contract_data(contract_id)
@@ -31,8 +32,7 @@ class FinalBlock:
         expens_data = self.fetch_expens_data(contract_id)
         payback_data  = PaybackCalculator(self.initial_budget, self.total_income, self.monthly_expenses)
         payback_month = payback_data.calculate_payback_time()
-        #print(payback_month ,"\n") #payback_data.profitobility_month)   
-
+        self.av = self.fetch_income_data_av(contract_id)
        
         self.final_frame = ttk.Frame(root, borderwidth=2, relief="solid", width=400, height=200)
 
@@ -68,13 +68,11 @@ class FinalBlock:
                                                             " Налоги: " + str(invest_data[0][10]) + "\n").grid(row=4, column=1, pady=5, sticky="w", padx=5)
 
 
-        ttk.Label(self.final_frame, text="Доходы:").grid(row=5, column=0, pady=5, sticky="w", padx=5)
+        ttk.Label(self.final_frame, text="Гости и средний чек:").grid(row=5, column=0, pady=5, sticky="w", padx=5)
 
-        self.input_params_label = ttk.Label(self.final_frame, text=" Средний чек (1 мес.):" + str(income_data[0][2]) + "\n" +
-                                                            " Средний чек (2 мес.):" + str((income_data[1][2]) * (income_data[1][3])) + "\n" +
-                                                            " Средний чек (3 мес.):" + str((income_data[2][2]) * (income_data[1][3])) + "\n" +
-                                                            " Средний чек (4 мес.):" + str((income_data[3][2]) * (income_data[1][3])) + "\n" +
-                                                            " Средний чек (5 мес.):" + str((income_data[4][2]) * (income_data[1][3])) 
+        self.input_params_label = ttk.Label(self.final_frame, text="Среднемесячный предполагаемый доход: " + str(int(income_data[0][3]) * self.av) + "\n" +
+                                                            "Среднее предполагаемое количество гостей: " + str(self.av) + "\n" +
+                                                            "Средний чек: " + str((income_data[0][3]))
                                                             ).grid(row=5, column=1, pady=5, sticky="w", padx=5)
         
         ttk.Label(self.final_frame, text="Ежемесячные расходы:").grid(row=6, column=0, pady=5, sticky="w", padx=5)
@@ -92,7 +90,8 @@ class FinalBlock:
 
         ttk.Label(self.final_frame, text="Результаты расчета:").grid(row=7, column=0, pady=5, sticky="w", padx=5)
         self.calculation_results_label = ttk.Label(self.final_frame, text="Изначальные инвестиции: " + str(initial_budget) + "\n" +
-                                                                          "Срок окупаемости: " + str(payback_month))
+                                                                          "Срок окупаемости: " + str(payback_month) 
+                                                                                                            )
         self.calculation_results_label.grid(row=7, column=1, pady=5, sticky="w", padx=5)
 
     def display_block(self):
@@ -128,6 +127,19 @@ class FinalBlock:
         self.cursor.execute(query, ([contract_id]))
         expens_data = self.cursor.fetchall()
         return expens_data
+    
+    def fetch_income_data_av(self, contract_id):
+        query = "SELECT * FROM income WHERE contract_id = %s;"
+        self.cursor.execute(query, ([contract_id]))
+        income_data = self.cursor.fetchall()
+        input_numbers = [income_data[0][2], income_data[1][2], income_data[2][2], income_data[3][2], income_data[4][2]]
+        generator = VisitorsGenerator()
+        visitors_list = generator.generate_visitors(input_numbers)
+        sum_of_list = 0
+        for i in range(len(visitors_list)):
+            sum_of_list += int(visitors_list[i])
+        average = int(sum_of_list/len(visitors_list))
+        return average
 
 
 

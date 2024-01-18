@@ -8,7 +8,7 @@ class VisitorsGenerator:
         initial_numbers = numbers[:5]
         
         # Генерация оставшихся 15 случайных чисел в пределах 30% от 5го числа
-        random_numbers = [round(random.uniform(0.7 * int(initial_numbers[4]), 1.3 * int(initial_numbers[4]))) for _ in range(31)]
+        random_numbers = [round(random.uniform(1 * int(initial_numbers[4]), 1 * int(initial_numbers[4]))) for _ in range(31)]
         
         # Объединение списков
         result = initial_numbers + random_numbers

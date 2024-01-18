@@ -26,11 +26,7 @@ class PaybackCalculator:
             self.payback_time_months += 1
             self.clear_profit.append(self.total_income[i])
             self.month_expens.append(self.monthly_expenses)
-            i += 1
-
-###
-            #print("ОКУПАЕМОСТЬ ", self.payback_time_months)
-###            
+            i += 1     
         g = i + 3
         while i < g and i<36:
             self.initial_budget_history.append(self.initial_budget)
@@ -40,11 +36,8 @@ class PaybackCalculator:
             i += 1            
         del self.month_expens[-1]
         self.payback_time_months = len(self.initial_budget_history)
-        return self.payback_time_months
+        return self.payback_time_months 
 
-
-
-    
     def plot_payback_graph(self):
         import matplotlib.pyplot as plt
         self.calculate_payback_time()

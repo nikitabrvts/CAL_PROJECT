@@ -83,7 +83,8 @@ class ManagerPage:
         query = "SELECT * FROM invested WHERE contract_id = %s;"
         self.cursor.execute(query, ([contract_id]))
         invest_data = self.cursor.fetchall()
-        total_invest = sum(invest_data[0]) - contract_id
+        total_invest1 = invest_data[0][1] + invest_data[0][2] + invest_data[0][3] + invest_data[0][4] + invest_data[0][5] 
+        total_invest = total_invest1 + invest_data[0][6] + invest_data[0][7] + invest_data[0][8] + invest_data[0][9] + invest_data[0][10] 
         return total_invest
     
     def fetch_all_invested_data(self, contract_id):
@@ -106,8 +107,17 @@ class ManagerPage:
         query = "SELECT * FROM expenses WHERE contract_id = %s;"
         self.cursor.execute(query, ([contract_id]))
         expens_data = self.cursor.fetchall()
-        total_expens_data = sum(expens_data[0]) - contract_id 
+        #total_expens_data = sum(expens_data[0]) - contract_id 
+        #total_expens_data = sum(row[1:] for row in expens_data)
+        total_expens_data = int(expens_data[0][1]) + int(expens_data[0][2]) + int(expens_data[0][3]) + int(expens_data[0][4]) + int(expens_data[0][5]) + int(expens_data[0][6]) + int(expens_data[0][7])
         return total_expens_data
+
+    def fetch_expens_dat_detailed(self, contract_id):
+        query = "SELECT * FROM expenses WHERE contract_id = %s;"
+        self.cursor.execute(query, ([contract_id]))
+        expens_data = self.cursor.fetchall()
+        return expens_data
+
     def fetch_review_data(self, contract_id):
         query = "SELECT * FROM review WHERE contract_id = %s ORDER BY review_id DESC LIMIT 1;"
         self.cursor.execute(query, ([contract_id]))
@@ -137,12 +147,17 @@ class ManagerPage:
         print(f"Формирование отчета для клиента...", client)
 
         payback = PaybackCalculator(
-            int(app.fetch_invested_data(client)),
+            int(app.fetch_invested_data(client))*1.15,
             app.fetch_income_data(client),
             int(app.fetch_expens_data(client))
                 )
+        print("это из дирика",
+            int(app.fetch_invested_data(client))*1.15,
+            app.fetch_income_data(client),
+            int(app.fetch_expens_data(client))
+        )
         payback1 = PaybackCalculator(
-            int(app.fetch_invested_data(client)),
+            int(app.fetch_invested_data(client))*1.15,
             app.fetch_income_data(client),
             int(app.fetch_expens_data(client))
                 )
@@ -155,6 +170,7 @@ class ManagerPage:
         self.fio = app.fetch_fio_data(client)
         self.check = app.fetch_check_data(client)
         self.av = app.fetch_income_data_av(client)
+        self.e = app.fetch_expens_dat_detailed(client)
     # Создаем PDF-документ
         font_path = 'Arial.ttf'
     
@@ -170,34 +186,43 @@ class ManagerPage:
         pdf_canvas.drawString(100, 720, f"Номер договора: {self.contract[0][0]}")
         pdf_canvas.drawString(100, 700, f"Идентификатор менеджера: {self.contract[0][2]}")
 
-        pdf_canvas.drawString(125, 660, f"Первоначальные инвестиции и срок окупаемости:")
 
-        pdf_canvas.setFillColor(colors.red)
+        pdf_canvas.drawString(125, 660, f"Расходы до открытия: ")
 
-        pdf_canvas.drawString(100, 620, f"Сумма первоначальных инвестиций: {self.about_inv_data}")
-        pdf_canvas.drawString(100, 640, f"Срок окупаемости (мес.): {self.month}")
+        pdf_canvas.drawString(100, 640, f"Аренда: {self.invested_data[0][1]}")
+        pdf_canvas.drawString(100, 620, f"Ремонт: {self.invested_data[0][2]}")
+        pdf_canvas.drawString(100, 600, f"Оборудование: {self.invested_data[0][3]}")
+        pdf_canvas.drawString(100, 580, f"Продукты: {self.invested_data[0][4]}")
+        pdf_canvas.drawString(100, 560, f"Документооборот: {self.invested_data[0][5]}")
+        pdf_canvas.drawString(100, 540, f"ФОТ: {self.invested_data[0][6]}")
+        pdf_canvas.drawString(100, 520, f"Услуги охранной организации: {self.invested_data[0][7]}")
+        pdf_canvas.drawString(100, 500, f"Маркетинг: {self.invested_data[0][8]}")
+        pdf_canvas.drawString(100, 480, f"Коммунальные платежы: {self.invested_data[0][9]}")
+        pdf_canvas.drawString(100, 460, f"Налоги: {self.invested_data[0][10]}")
 
-        pdf_canvas.setFillColor(colors.black)
+        pdf_canvas.drawString(125, 420, f"Гости и средний чек:")
 
-        pdf_canvas.drawString(100, 600, f"Первоначалные инвестиции: {self.invested_data[0][1]}")
-        pdf_canvas.drawString(100, 580, f"Ремонт: {self.invested_data[0][2]}")
-        pdf_canvas.drawString(100, 560, f"Оборудование: {self.invested_data[0][3]}")
-        pdf_canvas.drawString(100, 540, f"Продукты: {self.invested_data[0][4]}")
-        pdf_canvas.drawString(100, 520, f"Документооборот: {self.invested_data[0][5]}")
-        pdf_canvas.drawString(100, 500, f"ФОТ: {self.invested_data[0][6]}")
-        pdf_canvas.drawString(100, 480, f"Услуги охранной организации: {self.invested_data[0][7]}")
-        pdf_canvas.drawString(100, 460, f"Маркетинг: {self.invested_data[0][8]}")
-        pdf_canvas.drawString(100, 440, f"Коммунальные платежы: {self.invested_data[0][9]}")
-        pdf_canvas.drawString(100, 420, f"Налоги: {self.invested_data[0][10]}")
+        pdf_canvas.drawString(100, 400, f"Среднемесячный предполагаемый доход: {int(self.check[0][3]) * int(self.av)}")
+        pdf_canvas.drawString(100, 380, f"Среднее предполагаемое количество гостей: {self.av}")
+        pdf_canvas.drawString(100, 360, f"Средний чек: {int(self.check[0][3])}")
 
-        pdf_canvas.drawString(125, 380, f"Гости и средний чек:")
+        pdf_canvas.drawString(125, 320, f"Ежемесячные расходы:")
 
-        pdf_canvas.drawString(100, 360, f"Средний чек: {self.check[0][3]}")
-        pdf_canvas.drawString(100, 340, f"Предполагаемое количество гостей: {self.av}")
+        pdf_canvas.drawString(100, 300, f"Ежемесячная аренда: {self.e[0][2]}")
+        pdf_canvas.drawString(100, 280, f"Ремонт: {self.e[0][3]}")
+        pdf_canvas.drawString(100, 260, f"Продукты: {self.e[0][4]}")
+        pdf_canvas.drawString(100, 240, f"Зароботная плата: {self.e[0][5]}")
+        pdf_canvas.drawString(100, 220, f"Услуги охранной организации: {self.e[0][6]}")
+        pdf_canvas.drawString(100, 200, f"Маркетинг: {self.e[0][7]}")
+        pdf_canvas.drawString(100, 180, f"Коммунальные платежи: {self.e[0][8]}")
 
-        pdf_canvas.drawString(125, 300, f"Ежемесячные расходы:")
 
-        pdf_canvas.drawString(100, 280, f"Предполагаемые расходы в месяц: {self.expense_data}")
+        pdf_canvas.drawString(125, 140, f"Первоначальные инвестиции и срок окупаемости:")
+
+        pdf_canvas.drawString(100, 120, f"Сумма первоначальных инвестиций: {self.about_inv_data}")
+        pdf_canvas.drawString(100, 100, f"Срок окупаемости (мес.): {self.month}")
+
+
 
         pdf_canvas.save()            
 

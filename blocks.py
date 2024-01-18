@@ -184,6 +184,7 @@ class Blocks:
         self.smm = int(self.entry_smm.get())
         self.service = int(self.entry_service.get())
         self.tax = int(self.entry_tax.get())
+
         entry_v1 = self.entry_visitors1.get()
         entry_v2 = self.entry_visitors2.get()
         entry_v3 = self.entry_visitors3.get()
@@ -207,8 +208,16 @@ class Blocks:
         entry_month_guard = self.entry_month_guard.get()
         entry_month_smm = self.entry_month_smm.get()
         entry_month_service= self.entry_month_service.get()
+
         self.expenses = int(entry_month_rent) + int(entry_month_guard) + int(entry_month_products) + int(entry_month_repair) + int(entry_month_fot) + int(entry_month_service) + int(entry_month_smm)
 
+        self.pdf_rent = self.entry_month_rent.get()
+        self.pdf_repair = self.entry_month_repair.get()
+        self.pdf_products = self.entry_month_products.get()
+        self.pdf_fot = self.entry_month_fot.get()
+        self.pdf_guard = self.entry_month_guard.get()
+        self.pdf_smm = self.entry_month_smm.get()
+        self.pdf_service= self.entry_month_service.get()
 
 
         self.calculate_button.destroy()
@@ -240,38 +249,43 @@ class Blocks:
 
         pdf_canvas.drawString(125, 760, f"Информация о договоре:")
         
-        pdf_canvas.drawString(100, 740, f"Информация о клиенте: {self.final_frame.for_blocks[0][1]}, {self.final_frame.for_blocks[0][2]}, {self.final_frame.for_blocks[0][3]}, {self.final_frame.for_blocks[0][4]}")
+        pdf_canvas.drawString(100, 740, f"Информация о клиенте:{self.final_frame.for_blocks[0][1]}, {self.final_frame.for_blocks[0][2]}, {self.final_frame.for_blocks[0][3]}, {self.final_frame.for_blocks[0][4]} ")
         pdf_canvas.drawString(100, 720, f"Номер договора: {self.final_frame.contract_id}")
         pdf_canvas.drawString(100, 700, f"Идентификатор менеджера: {self.final_frame.cd[0][2]}")
 
-        pdf_canvas.drawString(125, 660, f"Первоначальные инвестиции и срок окупаемости:")
+        pdf_canvas.drawString(125, 660, f"Расходы до открытия: ")
 
-        pdf_canvas.setFillColor(colors.red)
+        pdf_canvas.drawString(100, 640, f"Аренда: {self.initial_rent}")
+        pdf_canvas.drawString(100, 620, f"Ремонт: {self.repair}")
+        pdf_canvas.drawString(100, 600, f"Оборудование: {self.equipment}")
+        pdf_canvas.drawString(100, 580, f"Продукты: {self.products}")
+        pdf_canvas.drawString(100, 560, f"Документооборот: {self.documents}")
+        pdf_canvas.drawString(100, 540, f"ФОТ: {self.fot}")
+        pdf_canvas.drawString(100, 520, f"Услуги охранной организации: {self.guard}")
+        pdf_canvas.drawString(100, 500, f"Маркетинг: {self.smm}")
+        pdf_canvas.drawString(100, 480, f"Коммунальные платежи: {self.service}")
+        pdf_canvas.drawString(100, 460, f"Налоги: {self.tax}")
 
-        pdf_canvas.drawString(100, 620, f"Сумма первоначальных инвестиций: {variable1}")
-        pdf_canvas.drawString(100, 640, f"Срок окупаемости (мес.): {variable2}")
+        pdf_canvas.drawString(125, 420, f"Гости и средний чек:")
 
-        pdf_canvas.setFillColor(colors.black)
-
-        pdf_canvas.drawString(100, 600, f"Первоначалные инвестиции: {self.initial_rent}")
-        pdf_canvas.drawString(100, 580, f"Ремонт: {self.repair}")
-        pdf_canvas.drawString(100, 560, f"Оборудование: {self.equipment}")
-        pdf_canvas.drawString(100, 540, f"Продукты: {self.products}")
-        pdf_canvas.drawString(100, 520, f"Документооборот: {self.documents}")
-        pdf_canvas.drawString(100, 500, f"ФОТ: {self.fot}")
-        pdf_canvas.drawString(100, 480, f"Услуги охранной организации: {self.guard}")
-        pdf_canvas.drawString(100, 460, f"Маркетинг: {self.smm}")
-        pdf_canvas.drawString(100, 440, f"Коммунальные платежы: {self.service}")
-        pdf_canvas.drawString(100, 420, f"Налоги: {self.tax}")
-
-        pdf_canvas.drawString(125, 380, f"Гости и средний чек:")
-
+        pdf_canvas.drawString(100, 400, f"Среднемесячный предполагаемый доход: {self.num_av_check*self.average}")
+        pdf_canvas.drawString(100, 380, f"Среднее предполагаемое количество гостей: {self.average}")
         pdf_canvas.drawString(100, 360, f"Средний чек: {self.num_av_check}")
-        pdf_canvas.drawString(100, 340, f"Предполагаемое количество гостей: {self.average}")
 
-        pdf_canvas.drawString(125, 300, f"Ежемесячные расходы:")
+        pdf_canvas.drawString(125, 320, f"Ежемесячные расходы:")
 
-        pdf_canvas.drawString(100, 280, f"Предполагаемые расходы в месяц: {self.expenses}")
+        pdf_canvas.drawString(100, 300, f"Ежемесячная аренда: {self.pdf_rent}")
+        pdf_canvas.drawString(100, 280, f"Ремонт: {self.pdf_repair}")
+        pdf_canvas.drawString(100, 260, f"Продукты: {self.pdf_products}")
+        pdf_canvas.drawString(100, 240, f"Зароботная плата: {self.pdf_fot}")
+        pdf_canvas.drawString(100, 220, f"Услуги охранной организации: {self.pdf_guard}")
+        pdf_canvas.drawString(100, 200, f"Маркетинг: {self.pdf_smm}")
+        pdf_canvas.drawString(100, 180, f"Коммунальные платежи: {self.pdf_service}")
+
+        pdf_canvas.drawString(125, 140, f"Первоначальные инвестиции и срок окупаемости:")
+
+        pdf_canvas.drawString(100, 120, f"Сумма первоначальных инвестиций: {variable1}")
+        pdf_canvas.drawString(100, 100, f"Срок окупаемости (мес.): {variable2}")
         
         pdf_canvas.save()
 
@@ -322,6 +336,7 @@ class Blocks:
         entry_month_guard = self.entry_month_guard.get()
         entry_month_smm = self.entry_month_smm.get()
         entry_month_service= self.entry_month_service.get()
+        
         self.expenses = int(entry_month_rent) + int(entry_month_guard) + int(entry_month_products) + int(entry_month_repair) + int(entry_month_fot) + int(entry_month_service) + int(entry_month_smm)
         
         self.income_frame.destroy()
@@ -336,13 +351,24 @@ class Blocks:
         self.final_frame.display_block()
 
         self.payback = PaybackCalculator(
-            int(self.ivest),
+            int(self.ivest) * 1.15,
             self.result_list,
             int(self.expenses)
         )
+        print("это из блоков",
+            (
+            int(self.ivest) * 1.15,
+            self.result_list,
+            int(self.expenses)
+        ))
         self.payback.plot_payback_graph()
         self.payback.plot_profit_graph()
-        self.months = self.payback.calculate_payback_time()
+        self.payback_pdf = PaybackCalculator(
+            int(self.ivest) * 1.15,
+            self.result_list,
+            int(self.expenses)
+        )
+        self.months = self.payback_pdf.calculate_payback_time()
 
 #####
 #####
