@@ -283,7 +283,7 @@ class Blocks:
 
         pdf_canvas.drawString(125, 160, f"Первоначальные инвестиции и срок окупаемости:")
 
-        pdf_canvas.drawString(100, 140, f"Сумма первоначальных инвестиций: {variable1}")
+        pdf_canvas.drawString(100, 140, f"Сумма первоначальных инвестиций: {variable1 * 1.15}")
         pdf_canvas.drawString(100, 120, f"Срок окупаемости (мес.): {variable2 - 2}")
         
         pdf_canvas.save()
@@ -354,12 +354,6 @@ class Blocks:
             self.result_list,
             int(self.expenses)
         )
-        print("это из блоков",
-            (
-            int(self.ivest) * 1.15,
-            self.result_list,
-            int(self.expenses)
-        ))
         self.payback.plot_payback_graph()
         self.payback.plot_profit_graph()
         self.payback_pdf = PaybackCalculator(

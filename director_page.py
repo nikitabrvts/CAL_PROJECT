@@ -144,18 +144,13 @@ class ManagerPage:
     
     def generate_report(self, client):
         # Метод для формирования отчета для выбранного клиента (ваш код здесь)
-        print(f"Формирование отчета для клиента...", client)
+        #print(f"Формирование отчета для клиента...", client)
 
         payback = PaybackCalculator(
             int(app.fetch_invested_data(client))*1.15,
             app.fetch_income_data(client),
             int(app.fetch_expens_data(client))
                 )
-        print("это из дирика",
-            int(app.fetch_invested_data(client))*1.15,
-            app.fetch_income_data(client),
-            int(app.fetch_expens_data(client))
-        )
         payback1 = PaybackCalculator(
             int(app.fetch_invested_data(client))*1.15,
             app.fetch_income_data(client),
@@ -218,7 +213,7 @@ class ManagerPage:
 
         pdf_canvas.drawString(125, 160, f"Первоначальные инвестиции и срок окупаемости:")
 
-        pdf_canvas.drawString(100, 140, f"Сумма первоначальных инвестиций: {self.about_inv_data}")
+        pdf_canvas.drawString(100, 140, f"Сумма первоначальных инвестиций: {self.about_inv_data * 1.15}")
         pdf_canvas.drawString(100, 120, f"Срок окупаемости (мес.): {self.month - 2}")
 
 
