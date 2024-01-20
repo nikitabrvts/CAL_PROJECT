@@ -147,25 +147,25 @@ class ManagerPage:
         #print(f"Формирование отчета для клиента...", client)
 
         payback = PaybackCalculator(
-            int(app.fetch_invested_data(client))*1.15,
-            app.fetch_income_data(client),
-            int(app.fetch_expens_data(client))
+            int(self.fetch_invested_data(client))*1.15,
+            self.fetch_income_data(client),
+            int(self.fetch_expens_data(client))
                 )
         payback1 = PaybackCalculator(
-            int(app.fetch_invested_data(client))*1.15,
-            app.fetch_income_data(client),
-            int(app.fetch_expens_data(client))
+            int(self.fetch_invested_data(client))*1.15,
+            self.fetch_income_data(client),
+            int(self.fetch_expens_data(client))
                 )
         self.month = payback1.calculate_payback_time()
-        self.invested_data = app.fetch_all_invested_data(client)
-        self.about_inv_data = app.fetch_invested_data(client)
-        self.income_data = app.fetch_income_data(client)
-        self.expense_data = app.fetch_expens_data(client)
-        self.contract = app.fetch_contract_data(client)
-        self.fio = app.fetch_fio_data(client)
-        self.check = app.fetch_check_data(client)
-        self.av = app.fetch_income_data_av(client)
-        self.e = app.fetch_expens_dat_detailed(client)
+        self.invested_data = self.fetch_all_invested_data(client)
+        self.about_inv_data = self.fetch_invested_data(client)
+        self.income_data = self.fetch_income_data(client)
+        self.expense_data = self.fetch_expens_data(client)
+        self.contract = self.fetch_contract_data(client)
+        self.fio = self.fetch_fio_data(client)
+        self.check = self.fetch_check_data(client)
+        self.av = self.fetch_income_data_av(client)
+        self.e = self.fetch_expens_dat_detailed(client)
     # Создаем PDF-документ
         font_path = 'Arial.ttf'
     
