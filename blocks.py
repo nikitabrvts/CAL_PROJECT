@@ -166,8 +166,8 @@ class Blocks:
         # Опция для минимальной высоты строки
         root.grid_rowconfigure(3, weight=1)
 
-        # Кнопка "Рассчитать"
-        self.calculate_button = ttk.Button(root, text="Рассчет", command=self.perform_calculations)
+        # Кнопка "Расчитать"
+        self.calculate_button = ttk.Button(root, text="Расчет", command=self.perform_calculations)
         self.calculate_button.grid(row=1, column=4, pady=10)
         
         # Опция для минимальной высоты строки
